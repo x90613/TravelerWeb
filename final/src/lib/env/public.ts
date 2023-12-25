@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+// 給use client用，也就是不給secret的部分
+// client components讀取沒有 NEXT_PUBLIC的env var會出錯
 const publicEnvSchema = z.object({
   NEXT_PUBLIC_PUSHER_KEY: z.string(),
   NEXT_PUBLIC_PUSHER_CLUSTER: z.string(),

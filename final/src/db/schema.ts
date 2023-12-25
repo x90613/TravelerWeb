@@ -1,17 +1,15 @@
 import { relations } from "drizzle-orm";
 import {
   index,
-  text,
   pgTable,
   serial,
   uuid,
   varchar,
+  //date,
   unique,
 } from "drizzle-orm/pg-core";
 
-// Checkout the many-to-many relationship in the following tutorial:
-// https://orm.drizzle.team/docs/rqb#many-to-many
-
+// Users
 export const usersTable = pgTable(
   "users",
   {
@@ -34,64 +32,103 @@ export const usersTable = pgTable(
 );
 
 export const usersRelations = relations(usersTable, ({ many }) => ({
-  usersToDocumentsTable: many(usersToDocumentsTable),
+  plansUsersTable: many(plansToUsersTable),
 }));
 
-export const documentsTable = pgTable(
-  "documents",
+
+// Plans (e.g., PlanA, PlanB)
+// usersTable is many-to-many relationship with Plans
+export const plansTable = pgTable(
+  "plans",
   {
     id: serial("id").primaryKey(),
     displayId: uuid("display_id").defaultRandom().notNull().unique(),
-    title: varchar("title", { length: 100 }).notNull(),
-    content: text("content").notNull(),
+    name: varchar("title", { length: 100 }).notNull(),
+    description: varchar("description", { length: 100 }).notNull(),
   },
   (table) => ({
     displayIdIndex: index("display_id_index").on(table.displayId),
   }),
 );
 
-export const documentsRelations = relations(documentsTable, ({ many }) => ({
-  usersToDocumentsTable: many(usersToDocumentsTable),
+export const plansRelations = relations(plansTable, ({ many }) => ({
+  journeys: many(journeysTable),
+  plansUsersTable: many(plansToUsersTable),
 }));
 
-export const usersToDocumentsTable = pgTable(
-  "users_to_documents",
+
+// ManyToMany需要建表維護  
+export const plansToUsersTable = pgTable(
+  "plans_to_users",
   {
     id: serial("id").primaryKey(),
+    planId: uuid("plan_id")
+      .notNull()
+      .references(() => plansTable.displayId, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
     userId: uuid("user_id")
       .notNull()
       .references(() => usersTable.displayId, {
         onDelete: "cascade",
         onUpdate: "cascade",
       }),
-    documentId: uuid("document_id")
-      .notNull()
-      .references(() => documentsTable.displayId, {
-        onDelete: "cascade",
-        onUpdate: "cascade",
-      }),
   },
   (table) => ({
-    userAndDocumentIndex: index("user_and_document_index").on(
+    planAndUserIndex: index("plan_and_user_index").on(
+      table.planId,
       table.userId,
-      table.documentId,
     ),
-    // This is a unique constraint on the combination of userId and documentId.
+    // This is a unique constraint on the combination of planId and userId.
     // This ensures that there is no duplicate entry in the table.
-    uniqCombination: unique().on(table.documentId, table.userId),
+    uniqCombination: unique().on(table.planId, table.userId),
   }),
 );
 
-export const usersToDocumentsRelations = relations(
-  usersToDocumentsTable,
+export const plansToUsersRelations = relations(
+  plansToUsersTable,
   ({ one }) => ({
-    document: one(documentsTable, {
-      fields: [usersToDocumentsTable.documentId],
-      references: [documentsTable.displayId],
-    }),
     user: one(usersTable, {
-      fields: [usersToDocumentsTable.userId],
+      fields: [plansToUsersTable.userId],
       references: [usersTable.displayId],
+    }),
+
+    plan: one(plansTable, {
+      fields: [plansToUsersTable.planId],
+      references: [plansTable.displayId],
     }),
   }),
 );
+
+
+// journeysTable (e.g., journey1, journey2)
+// plansTable is one-to-many relationship with journeysTable
+export const journeysTable = pgTable(
+  "journeys",
+  {
+    id: serial("id").primaryKey(),
+    displayId: uuid("display_id").defaultRandom().notNull().unique(),
+    title: varchar("title", { length: 100 }).notNull(),
+    note: varchar("note", { length: 100 }).notNull(),
+    location: varchar("location", { length: 100 }).notNull(),
+    start: varchar("start"),
+    end: varchar("end"),
+    plansId: uuid("plans_id") // 外來鍵(如果plan刪掉，journey也要一併刪除)
+      .references(() => plansTable.displayId, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      })
+      .notNull(),
+  },
+  (table) => ({
+    displayIdIndex: index("display_id_index").on(table.displayId),
+  }),
+);
+
+export const journeysRelations = relations(journeysTable,({one}) => ({
+  plansTable: one(plansTable, {
+    fields: [journeysTable.plansId],
+    references: [plansTable.displayId], // journey有foreign key: plansTable上的displayID
+  }),
+}));

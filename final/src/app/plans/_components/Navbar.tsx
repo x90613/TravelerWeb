@@ -9,15 +9,15 @@ import { Button } from "@/components/ui/button";
 import { auth } from "@/lib/auth";
 import { publicEnv } from "@/lib/env/public";
 
-import { createDocument, deleteDocument, getDocuments } from "./actions";
+import { createPlan, deletePlan, getPlans } from "./actions";
 
 async function Navbar() {
-  const session = await auth();
+  const session = await auth(); //拿到session
   if (!session || !session?.user?.id) {
     redirect(publicEnv.NEXT_PUBLIC_BASE_URL);
   }
   const userId = session.user.id;
-  const documents = await getDocuments(userId);
+  const plans = await getPlans(userId);
   return (
     <nav className="flex w-full flex-col overflow-y-scroll bg-slate-100 pb-10">
       <nav className="sticky top-0 flex flex-col items-center justify-between border-b bg-slate-100 pb-2">
@@ -43,9 +43,9 @@ async function Navbar() {
           className="w-full hover:bg-slate-200"
           action={async () => {
             "use server";
-            const newDocId = await createDocument(userId);
-            revalidatePath("/docs");
-            redirect(`${publicEnv.NEXT_PUBLIC_BASE_URL}/docs/${newDocId}`);
+            const newPlanId = await createPlan(userId);
+            revalidatePath("/plans"); // 重新get一次資料
+            redirect(`${publicEnv.NEXT_PUBLIC_BASE_URL}/plans/${newPlanId}`);
           }}
         >
           <button
@@ -53,12 +53,12 @@ async function Navbar() {
             className="flex w-full items-center gap-2 px-3 py-1 text-left text-sm text-slate-500"
           >
             <AiFillFileAdd size={16} />
-            <p>Create Document</p>
+            <p>Create Plan</p>
           </button>
         </form>
       </nav>
       <section className="flex w-full flex-col pt-3">
-        {documents.map((doc, i) => {
+        {plans.map((p, i) => {
           return (
             <div
               key={i}
@@ -66,12 +66,12 @@ async function Navbar() {
             >
               <Link
                 className="grow px-3 py-1"
-                href={`/docs/${doc.document.displayId}`}
+                href={`/plans/${p.plan.displayId}`}
               >
                 <div className="flex items-center gap-2">
                   <AiFillFileText />
                   <span className="text-sm font-light ">
-                    {doc.document.title}
+                    {p.plan.name}
                   </span>
                 </div>
               </Link>
@@ -79,10 +79,10 @@ async function Navbar() {
                 className="hidden px-2 text-slate-400 hover:text-red-400 group-hover:flex"
                 action={async () => {
                   "use server";
-                  const docId = doc.document.displayId;
-                  await deleteDocument(docId);
-                  revalidatePath("/docs");
-                  redirect(`${publicEnv.NEXT_PUBLIC_BASE_URL}/docs`);
+                  const planId = p.plan.displayId;
+                  await deletePlan(planId);
+                  revalidatePath("/plans");
+                  redirect(`${publicEnv.NEXT_PUBLIC_BASE_URL}/plans`);
                 }}
               >
                 <button type={"submit"}>

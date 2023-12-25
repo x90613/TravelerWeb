@@ -6,14 +6,14 @@ import { eq } from "drizzle-orm";
 import { db } from "@/db";
 import { usersTable } from "@/db/schema";
 
-import CredentialsProvider from "./CredentialsProvider";
+import CredentialsProvider from "./CredentialsProvider"; //引入自訂的provider
 
 export const {
   handlers: { GET, POST },
   auth,
 } = NextAuth({
-  providers: [GitHub, CredentialsProvider],
-  callbacks: {
+  providers: [GitHub, CredentialsProvider],// github原本就做好provider
+  callbacks: { // 分別是session跟jwt，session可以拿到user的基本吃訓，而jwt處理sing in
     async session({ session, token }) {
       const email = token.email || session?.user?.email;
       if (!email) return session;
@@ -56,7 +56,7 @@ export const {
       if (existedUser) return token;
       if (provider !== "github") return token;
 
-      // Sign up
+      // Sign up(存到db裡面)
       await db.insert(usersTable).values({
         username: name,
         email: email.toLowerCase(),

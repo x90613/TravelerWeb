@@ -6,23 +6,23 @@ import { useParams, useRouter } from "next/navigation";
 import { useDebounce } from "use-debounce";
 
 import { pusherClient } from "@/lib/pusher/client";
-import type { Document, User } from "@/lib/types/db";
+import type { PlanData, User } from "@/lib/types/db";
 
 type PusherPayload = {
   senderId: User["id"];
-  document: Document;
+  plan: PlanData;
 };
 
-export const useDocument = () => {
-  const { docId } = useParams();
-  const documentId = Array.isArray(docId) ? docId[0] : docId;
+export const usePlan = () => {
+  const { pId } = useParams();
+  const planId = Array.isArray(pId) ? pId[0] : pId;
 
-  const [document, setDocument] = useState<Document | null>(null);
-  const [dbDocument, setDbDocument] = useState<Document | null>(null);
+  const [plan, setPlan] = useState<PlanData | null>(null);
+  const [dbPlan, setDbPlan] = useState<PlanData | null>(null);
   // [NOTE] 2023.11.18 - Extracting the debounceMilliseconds to a constant helps ensure the two useDebounce hooks are using the same value.
-  const debounceMilliseconds = 300;
-  const [debouncedDocument] = useDebounce(document, debounceMilliseconds);
-  const [debouncedDbDocument] = useDebounce(dbDocument, debounceMilliseconds);
+  const debounceMilliseconds = 300; //超過300毫秒沒動作再存
+  const [debouncedPlan] = useDebounce(plan, debounceMilliseconds);
+  const [debouncedDbPlan] = useDebounce(dbPlan, debounceMilliseconds);
   const router = useRouter();
 
   const { data: session } = useSession();
@@ -30,12 +30,12 @@ export const useDocument = () => {
 
   // [FIX] 2023.11.18 - This memo should compare the debounced values to avoid premature updates to the DB.
   const isSynced = useMemo(() => {
-    if (debouncedDocument === null || debouncedDbDocument === null) return true;
+    if (debouncedPlan === null || debouncedDbPlan === null) return true;
     return (
-        debouncedDocument.title === debouncedDbDocument.title &&
-        debouncedDocument.content === debouncedDbDocument.content
+        debouncedPlan.name === debouncedDbPlan.name &&
+        debouncedPlan.description === debouncedDbPlan.description
     );
-  }, [debouncedDocument, debouncedDbDocument]);
+  }, [debouncedPlan, debouncedDbPlan]);
 
   // When the debounced document changes, update the document
   // [FIX] 2023.11.18 - Listen to debouncedDbDocument instead of dbDocument.
@@ -49,100 +49,104 @@ export const useDocument = () => {
     //                     Therefore, we don't need to explicitly check for their null values.
     if (isSynced) return;
 
-    const updateDocument = async () => {
-      if (!debouncedDocument) return;
+    const updatePlan = async () => {
+      if (!debouncedPlan) return;
       // [NOTE] 2023.11.18 - This PUT request will trigger a pusher event that will update the document to the other clients.
-      const res = await fetch(`/api/documents/${documentId}`, {
+      const res = await fetch(`/api/plans/${planId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          title: debouncedDocument.title,
-          content: debouncedDocument.content,
+          name: debouncedPlan.name,
+          description: debouncedPlan.description,
         }),
       });
       if (!res.ok) {
+        console.log("usePlan error1")
         return;
       }
-      const data: Document = await res.json();
+      const data: PlanData = await res.json();
       // Update the navbar if the title changed
-      if (debouncedDbDocument?.title !== data.title) {
+      if (debouncedDbPlan?.name !== data.name) {
         router.refresh();
       }
-      setDbDocument(data);
+      setDbPlan(data);
     };
-    updateDocument();
-  }, [debouncedDocument, documentId, router, debouncedDbDocument, isSynced]);
+    updatePlan();
+  }, [debouncedPlan, planId, router, debouncedDbPlan, isSynced]);
 
   // Subscribe to pusher events
   useEffect(() => {
-    if (!documentId) return;
+    if (!planId) return;
     // Private channels are in the format: private-...
-    const channelName = `private-${documentId}`;
+    const channelName = `private-${planId}`;
 
     try {
       const channel = pusherClient.subscribe(channelName);
-      channel.bind("doc:update", ({ senderId, document: received_document }: PusherPayload) => {
+      channel.bind("p:update", ({ senderId, plan: received_document }: PusherPayload) => {
         if (senderId === userId) {
           return;
         }
         // [NOTE] 2023.11.18 - This is the pusher event that updates the dbDocument.
-        setDocument(received_document);
-        setDbDocument(received_document);
+        setPlan(received_document);
+        setDbPlan(received_document);
         router.refresh();
       });
     } catch (error) {
       console.error(error);
-      router.push("/docs");
+      router.push("/plans");
     }
 
     // Unsubscribe from pusher events when the component unmounts
     return () => {
       pusherClient.unsubscribe(channelName);
     };
-  }, [documentId, router, userId]);
+  }, [planId, router, userId]);
 
   useEffect(() => {
-    if (!documentId) return;
-    const fetchDocument = async () => {
-      const res = await fetch(`/api/documents/${documentId}`);
+    if (!planId) return;
+    console.log("planID",planId) //此處有印出來，代表fetchPlan res有錯
+    const fetchPlan = async () => {
+      const res = await fetch(`/api/plans/${planId}`);
       if (!res.ok) {
-        setDocument(null);
-        router.push("/docs");
+        console.log("usePlan error2", res)
+        setPlan(null);
+        router.push("/plans");
         return;
       }
       const data = await res.json();
-      setDocument(data);
-      setDbDocument(data);
+      setPlan(data);
+      setDbPlan(data);
     };
-    fetchDocument();
-  }, [documentId, router]);
+    fetchPlan();
+  }, [planId, router]);
 
-  const title = document?.title || "";
-  const setTitle = (newTitle: string) => {
-    if (document === null) return;
-    setDocument({
-      ...document,
-      title: newTitle,
+  const name = plan?.name || "";
+  const setName = (newName: string) => {
+    console.log("有啟動setName")
+    if (plan === null) return;
+    setPlan({
+      ...plan,
+      name: newName,
     });
   };
 
-  const content = document?.content || "";
-  const setContent = (newContent: string) => {
-    if (document === null) return;
-    setDocument({
-      ...document,
-      content: newContent,
+  const description = plan?.description || "";
+  const setDescription = (newDescription: string) => {
+    if (plan === null) return;
+    setPlan({
+      ...plan,
+      description: newDescription,
     });
   };
 
   return {
-    documentId,
-    document,
-    title,
-    setTitle,
-    content,
-    setContent,
+    planId,
+    plan,
+    name,
+    setName,
+    description,
+    setDescription,
   };
 };

@@ -29,6 +29,7 @@ export const useDocument = () => {
   const userId = session?.user?.id;
 
   // [FIX] 2023.11.18 - This memo should compare the debounced values to avoid premature updates to the DB.
+  // 只有當相依值有更新，才做函數計算，回傳的是boolean值(目前是否sync)
   const isSynced = useMemo(() => {
     if (debouncedDocument === null || debouncedDbDocument === null) return true;
     return (
@@ -47,7 +48,7 @@ export const useDocument = () => {
   useEffect(() => {
     // [NOTE] 2023.11.18 - If either of the debounced value is null, then `isSynced` must be true. 
     //                     Therefore, we don't need to explicitly check for their null values.
-    if (isSynced) return;
+    if (isSynced) return;//如果沒sync就要往下繼續做
 
     const updateDocument = async () => {
       if (!debouncedDocument) return;

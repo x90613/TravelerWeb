@@ -4,20 +4,21 @@ import { and, eq } from "drizzle-orm";
 import Pusher from "pusher";
 
 import { db } from "@/db";
-import { documentsTable, usersToDocumentsTable } from "@/db/schema";
+import { plansTable, plansToUsersTable } from "@/db/schema";
 import { auth } from "@/lib/auth";
 import { privateEnv } from "@/lib/env/private";
 import { publicEnv } from "@/lib/env/public";
-import { updateDocSchema } from "@/validators/updateDocument";
+import { updatePSchema } from "@/validators/updatePlan";
+import { PlanData } from "@/lib/types/db";
 
-// GET /api/documents/:documentId
+// GET /api/plans/:planId
 export async function GET(
   req: NextRequest,
   {
     params,
   }: {
     params: {
-      documentId: string;
+      planId: string;
     };
   },
 ) {
@@ -28,33 +29,33 @@ export async function GET(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
     const userId = session.user.id;
-
-    // Get the document
-    const dbDocument = await db.query.usersToDocumentsTable.findFirst({
+    
+    // Get the plan
+    const dbPlan = await db.query.plansToUsersTable.findFirst({
       where: and(
-        eq(usersToDocumentsTable.userId, userId),
-        eq(usersToDocumentsTable.documentId, params.documentId),
+        eq(plansToUsersTable.userId, userId),
+        eq(plansToUsersTable.planId, params.planId),
       ),
       with: {
-        document: {
+        plan: {
           columns: {
             displayId: true,
-            title: true,
-            content: true,
+            name: true,
+            description: true,
           },
         },
       },
     });
-    if (!dbDocument?.document) {
+    if (!dbPlan?.plan) {
       return NextResponse.json({ error: "Doc Not Found" }, { status: 404 });
     }
 
-    const document = dbDocument.document;
+    const plan = dbPlan.plan;
     return NextResponse.json(
       {
-        id: document.displayId,
-        title: document.title,
-        content: document.content,
+        id: plan.displayId,
+        name: plan.name,
+        description: plan.description,
       },
       { status: 200 },
     );
@@ -70,10 +71,10 @@ export async function GET(
   }
 }
 
-// PUT /api/documents/:documentId
+// PUT /api/plans/:planId
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { documentId: string } },
+  { params }: { params: { planId: string } },
 ) {
   try {
     // Get user from session
@@ -83,36 +84,38 @@ export async function PUT(
     }
     const userId = session.user.id;
 
-    // Check ownership of document
-    const [doc] = await db
+    // Check ownership of plan
+    const [p] = await db
       .select({
-        documentId: usersToDocumentsTable.documentId,
+        planId: plansToUsersTable.planId,
       })
-      .from(usersToDocumentsTable)
+      .from(plansToUsersTable)
       .where(
         and(
-          eq(usersToDocumentsTable.userId, userId),
-          eq(usersToDocumentsTable.documentId, params.documentId),
+          eq(plansToUsersTable.userId, userId),
+          eq(plansToUsersTable.planId, params.planId),
         ),
       );
-    if (!doc) {
+    if (!p) {
       return NextResponse.json({ error: "Doc Not Found" }, { status: 404 });
     }
 
     // Parse the request body
     const reqBody = await req.json();
-    let validatedReqBody: Partial<Omit<Document, "id">>;
+    let validatedReqBody: Partial<Omit<PlanData, "id">>;
     try {
-      validatedReqBody = updateDocSchema.parse(reqBody);
+      validatedReqBody = updatePSchema.parse(reqBody);
     } catch (error) {
+      console.log("fail this shit")
       return NextResponse.json({ error: "Bad Request" }, { status: 400 });
     }
 
+    // console.log("validatedReqBody: ",validatedReqBody)
     // Update document
-    const [updatedDoc] = await db
-      .update(documentsTable)
+    const [updatedP] = await db
+      .update(plansTable)
       .set(validatedReqBody)
-      .where(eq(documentsTable.displayId, params.documentId))
+      .where(eq(plansTable.displayId, params.planId))
       .returning();
 
     // Trigger pusher event
@@ -125,25 +128,24 @@ export async function PUT(
     });
 
     // Private channels are in the format: private-...
-    await pusher.trigger(`private-${updatedDoc.displayId}`, "doc:update", {
+    await pusher.trigger(`private-${updatedP.displayId}`, "p:update", {
       senderId: userId,
-      document: {
-        id: updatedDoc.displayId,
-        title: updatedDoc.title,
-        content: updatedDoc.content,
+      plan: {
+        id: updatedP.displayId,
+        name: updatedP.name,
+        description: updatedP.description,
       },
     });
 
     return NextResponse.json(
       {
-        id: updatedDoc.displayId,
-        title: updatedDoc.title,
-        content: updatedDoc.content,
+        id: updatedP.displayId,
+        name: updatedP.name,
+        description: updatedP.description,
       },
       { status: 200 },
     );
   } catch (error) {
-    console.log(error);
     return NextResponse.json(
       { error: "Internal Server Error" },
       { status: 500 },

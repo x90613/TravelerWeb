@@ -16,18 +16,18 @@ import { Input } from "@/components/ui/input";
 import { auth } from "@/lib/auth";
 import { publicEnv } from "@/lib/env/public";
 
-import { addDocumentAuthor, getDocumentAuthors } from "./actions";
+import { addPlanAuthor, getPlanAuthors } from "./actions";
 
 type Props = {
-  docId: string;
+  pId: string;
 };
-async function ShareDialog({ docId }: Props) {
+async function ShareDialog({ pId }: Props) {
   const session = await auth();
   if (!session?.user?.id) return null;
-  //   const userId = session.user.id;
-
-  const authors = await getDocumentAuthors(docId);
-
+  // const userId = session.user.id;
+  
+  const authors = await getPlanAuthors(pId);
+  // console.log("555", authors)
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -35,8 +35,8 @@ async function ShareDialog({ docId }: Props) {
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Share the document</DialogTitle>
-          <DialogDescription>Share the doc with other users.</DialogDescription>
+          <DialogTitle>Share the plan</DialogTitle>
+          <DialogDescription>Share the plan with other users.</DialogDescription>
         </DialogHeader>
         <form
           action={async (e) => {
@@ -44,11 +44,11 @@ async function ShareDialog({ docId }: Props) {
             const email = e.get("email");
             if (!email) return;
             if (typeof email !== "string") return;
-            const result = await addDocumentAuthor(docId, email);
+            const result = await addPlanAuthor(pId, email);
             if (!result) {
-              redirect(`${publicEnv.NEXT_PUBLIC_BASE_URL}/docs/${docId}`);
+              redirect(`${publicEnv.NEXT_PUBLIC_BASE_URL}/plans/${pId}`);
             }
-            revalidatePath(`${publicEnv.NEXT_PUBLIC_BASE_URL}/docs/${docId}`);
+            revalidatePath(`${publicEnv.NEXT_PUBLIC_BASE_URL}/plans/${pId}`);
           }}
           className="flex flex-row gap-4"
         >

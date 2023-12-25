@@ -10,4 +10,4 @@ const client = new Client({
   connectionTimeoutMillis: 5000,
 });
 await client.connect();
-export const db = drizzle(client, { schema }); //這樣才能使用query拉資料
+export const db = drizzle(client, { schema });

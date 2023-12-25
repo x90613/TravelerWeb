@@ -29,6 +29,7 @@ export default CredentialsProvider({
     }
     const { email, username, password } = validatedCredentials;
 
+    // 進db看是否存在by email
     const [existedUser] = await db
       .select({
         id: usersTable.displayId,
@@ -68,6 +69,7 @@ export default CredentialsProvider({
       console.log(`The email has registered with ${existedUser.provider}.`);
       return null;
     }
+    // 因為用Oauth sign in不會存hashedPassword
     if (!existedUser.hashedPassword) {
       console.log("The email has registered with social account.");
       return null;

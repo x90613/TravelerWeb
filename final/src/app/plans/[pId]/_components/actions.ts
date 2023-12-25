@@ -1,11 +1,11 @@
 import { eq } from "drizzle-orm";
 
 import { db } from "@/db";
-import { usersTable, usersToDocumentsTable } from "@/db/schema";
+import { usersTable, plansToUsersTable } from "@/db/schema";
 
-export async function getDocumentAuthors(docId: string) {
-  const dbAuthors = await db.query.usersToDocumentsTable.findMany({
-    where: eq(usersToDocumentsTable.documentId, docId),
+export async function getPlanAuthors(pId: string) {
+  const dbAuthors = await db.query.plansToUsersTable.findMany({
+    where: eq(plansToUsersTable.planId, pId),
     with: {
       user: {
         columns: {
@@ -30,7 +30,7 @@ export async function getDocumentAuthors(docId: string) {
   return authors;
 }
 
-export const addDocumentAuthor = async (docId: string, email: string) => {
+export const addPlanAuthor = async (pId: string, email: string) => {
   // Find the user by email
   const [user] = await db
     .select({
@@ -41,9 +41,10 @@ export const addDocumentAuthor = async (docId: string, email: string) => {
   if (!user) {
     return false;
   }
-
-  await db.insert(usersToDocumentsTable).values({
-    documentId: docId,
+  console.log("123");
+  
+  await db.insert(plansToUsersTable).values({
+    planId: pId,
     userId: user.displayId,
   });
 };

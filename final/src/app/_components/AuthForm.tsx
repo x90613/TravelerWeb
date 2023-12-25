@@ -22,12 +22,12 @@ function AuthForm() {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // TODO: sign in logic
+    // TODO: sign in logic 使用nextAuth
     signIn("credentials", {
       email,
       username,
       password,
-      callbackUrl: `${publicEnv.NEXT_PUBLIC_BASE_URL}/docs`,
+      callbackUrl: `${publicEnv.NEXT_PUBLIC_BASE_URL}/plans`,
     });
   };
   return (
@@ -103,7 +103,7 @@ function AuthForm() {
           onClick={async () => {
             // TODO: sign in with github
             signIn("github", {
-              callbackUrl: `${publicEnv.NEXT_PUBLIC_BASE_URL}/docs`,
+              callbackUrl: `${publicEnv.NEXT_PUBLIC_BASE_URL}/plans`,
             });
           }}
           className="flex w-full"

@@ -3,9 +3,9 @@ import { type NextRequest, NextResponse } from "next/server";
 import { and, eq } from "drizzle-orm";
 
 import { db } from "@/db";
-import { usersToDocumentsTable } from "@/db/schema";
 import { auth } from "@/lib/auth";
 import { pusherServer } from "@/lib/pusher/server";
+import { plansToUsersTable } from "@/db/schema";
 
 export async function POST(request: NextRequest) {
   try {
@@ -19,8 +19,8 @@ export async function POST(request: NextRequest) {
     const channel = data.get("channel_name") as string;
 
     // channel name is in the format: private-<docId>
-    const docId = channel.slice(8);
-    if (!docId) {
+    const pId = channel.slice(8);
+    if (!pId) {
       return NextResponse.json(
         { error: "Invalid channel name" },
         { status: 400 },
@@ -28,16 +28,16 @@ export async function POST(request: NextRequest) {
     }
 
     // Get the document from the database
-    const [docOwnership] = await db
+    const [pOwnership] = await db
       .select()
-      .from(usersToDocumentsTable)
+      .from(plansToUsersTable)
       .where(
         and(
-          eq(usersToDocumentsTable.userId, session.user.id),
-          eq(usersToDocumentsTable.documentId, docId),
+          eq(plansToUsersTable.userId, session.user.id),
+          eq(plansToUsersTable.planId, pId),
         ),
       );
-    if (!docOwnership) {
+    if (!pOwnership) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -53,7 +53,6 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(authResponse);
   } catch (error) {
-    console.log(error);
     return NextResponse.json(
       { error: "Internal server error" },
       {
