@@ -14,7 +14,6 @@ export type JourneyData = {
   end: string;
   location: string;
   note: string;
-  // description: string;
   // list_id: string; //才能返回去刪除Plan的list，在關聯式資料庫應該不用直接刪那個table即可
 };
 

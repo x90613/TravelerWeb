@@ -1,3 +1,4 @@
+import AddDialog from "./_components/AddDialog";
 import ShareDialog from "./_components/ShareDialog";
 
 type Props = {
@@ -8,7 +9,10 @@ type Props = {
 function PlanEditorLayout({ children, params }: Props) {
   return (
     <div className="w-full">
-      <div className="fixed right-2 top-1 z-50">
+      <div className="fixed right-20 top-1 z-50">
+        <AddDialog pId={params.pId} />
+      </div>
+      <div className="fixed right-1 top-1 z-50">
         <ShareDialog pId={params.pId} />
       </div>
       {children}
