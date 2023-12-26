@@ -8,7 +8,7 @@ import { signIn } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 // Run: npx shadcn-ui@latest add card
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import useChatrooms from "@/hooks/useChatrooms";
+import usePlans from "@/hooks/usePlans";
 import { publicEnv } from "@/lib/env/public";
 
 import AuthInput from "./AuthInput";
@@ -19,7 +19,7 @@ function AuthForm() {
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [isSignUp, setIsSignUp] = useState<boolean>(false);
 
-  const { fetchChatrooms } = useChatrooms();
+  const { fetchPlans } = usePlans();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -27,9 +27,9 @@ function AuthForm() {
       signIn("credentials", {
         username,
         password,
-        callbackUrl: `${publicEnv.NEXT_PUBLIC_BASE_URL}/chat`,
+        callbackUrl: `${publicEnv.NEXT_PUBLIC_BASE_URL}/plan`,
       });
-      await fetchChatrooms();
+      await fetchPlans();
     } catch (err) {
       alert("Invalid Credentials");
     }

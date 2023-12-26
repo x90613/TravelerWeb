@@ -11,7 +11,6 @@ import {
   unique,
 } from "drizzle-orm/pg-core";
 
-// 我們的DB
 
 export const usersTable = pgTable(
   "users",
@@ -30,7 +29,7 @@ export const usersTable = pgTable(
   },
   (table) => ({
     displayIdIndex: index("display_id_index").on(table.displayId),
-    emailIndex: index("email_index").on(table.username),
+    emailIndex: index("username_index").on(table.username),
   }),
 );
 
@@ -55,7 +54,6 @@ export const plansTable = pgTable(
 );
 
 export const plansRelations = relations(plansTable, ({ many }) => ({
-  journeys: many(journeysTable),
   plansUsersTable: many(usersToPlansTable),
 }));
 

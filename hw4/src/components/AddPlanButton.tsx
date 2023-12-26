@@ -18,40 +18,45 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-import useChatrooms from "@/hooks/useChatrooms";
+import usePlans from "@/hooks/usePlans";
 
-export default function AddChatroomButton() {
+export default function AddPlanButton() {
   const [modalOpen, setModalOpen] = useState(false);
   const router = useRouter();
+  const { addPlan } = usePlans();
 
-  const { addChatroom } = useChatrooms();
-
-  const usernameRef = useRef<HTMLInputElement>(null);
+  const planNameRef = useRef<HTMLInputElement>(null);
+  const planDescriptionRef = useRef<HTMLInputElement>(null);
 
   const handleSave = async () => {
-    const targetUsername = usernameRef.current?.value;
 
-    if (!targetUsername) {
-      alert("Please enter an username!");
+    const planName = planNameRef.current?.value;
+    if (!planName) {
+      alert("Please enter an planName!");
+      return false;
+    }
+
+    const planDescription = planDescriptionRef.current?.value;
+    if (!planDescription) {
+      alert("Please enter an planDescription!");
       return false;
     }
 
     try {
-      const ret = await addChatroom(targetUsername);
+      const ret = await addPlan(planName, planDescription);
 
-      if (!ret.chatroom && !ret.ok) {
+      if (!ret.plan && !ret.ok) {
         const body = await ret.json();
         alert(body.error);
         return false;
       }
 
-      const newChatroom = ret.chatroom;
-
-      const chatId = newChatroom.displayId;
+      const newPlan = ret.plan;
+      const planId = newPlan.displayId;
 
       setModalOpen(false);
 
-      router.push(`/chat/${chatId}`)
+      router.push(`/plan/${planId}`)
     } catch (e) {
       console.error(e);
       alert(e);
@@ -67,20 +72,32 @@ export default function AddChatroomButton() {
     >
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Add a new chatroom</DialogTitle>
+          <DialogTitle>Add a new plan</DialogTitle>
           <DialogDescription>
-            Create a new chatroom!
-            Please enter the username of the person you want to chat with.
+            Create a new plan!
+            Please enter the plan name & the description.
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-2">
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="username" className="text-right">
-              Username
+              Name
             </Label>
             <Input
-              ref={usernameRef}
-              placeholder="Enter an username"
+              ref={planNameRef}
+              placeholder=""
+              className="w-fit"
+            />
+          </div>
+        </div>
+        <div className="grid gap-4 py-2">
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="username" className="text-right">
+              description
+            </Label>
+            <Input
+              ref={planDescriptionRef}
+              placeholder=""
               className="w-fit"
             />
           </div>

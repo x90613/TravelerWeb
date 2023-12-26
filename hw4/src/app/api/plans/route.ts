@@ -62,6 +62,8 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
+    const planName = body.planName;
+    const description = body.description;
     // const targetUsername = body.username; //要共邊的目標
 
     // get target user id
@@ -95,8 +97,8 @@ export async function POST(req: NextRequest) {
       const [newPlan] = await tx
         .insert(plansTable)
         .values({
-          name: "New Plan",
-          description: "write some description",
+          name: planName,
+          description: description,
         })
         .returning();
       await tx.insert(usersToPlansTable).values({
