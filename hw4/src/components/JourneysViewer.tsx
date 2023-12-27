@@ -238,7 +238,7 @@ function JourneyItem({
                   <div className="border m-1 p-1 rounded-lg">{journey.start}</div>
                 </div>
                 <div className="flex">
-                  <div className="font-bold m-1 p-1">End</div>
+                  <div className="font-bold m-1 p-1">⁀➴ End</div>
                   <div className="border m-1 p-1 rounded-lg">{journey.end}</div>
                 </div>
               </div>

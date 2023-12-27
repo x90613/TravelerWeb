@@ -73,7 +73,7 @@ export default function PlanItem({
           }}
         >
           <div className="flex flex-col">
-            <span className="text-lg font-medium">{name}</span>
+            <span className="text-lg font-medium">📍{name}</span>
           </div>
         </Link>
 

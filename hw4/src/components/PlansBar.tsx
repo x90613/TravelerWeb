@@ -73,6 +73,7 @@ export default function PlansBar() {
             <AddPlanButton />
           </div>
         </div>
+        <p className="w-full p-3 px-4">The joy of journeying.</p>
         {plans.map((p: any) => (
           <PlanItem
             key={p.plan.displayId}
@@ -85,7 +86,7 @@ export default function PlansBar() {
           console.log(plan)
         ))} */}
       </div>
-      <div className="fixed left-0 bottom-0 p-4">
+      <div className="fixed left-3 bottom-5 p-4">
         <div className="flex flex-row">
           <LuUser size={20} strokeWidth={3} className="m-1" />
           <span className="m-1 text-medium font-semibold">{session?.user?.username}</span>
@@ -95,7 +96,7 @@ export default function PlansBar() {
           <Link href={`/auth/signout`}>
             <div className="flex flex-row">
               <LuLogOut size={20} strokeWidth={3} className="m-1" />
-              <span className="m-1 text-medium font-semibold">Log Out</span>
+              <span className="m-1 text-medium font-semibold">Sign Out</span>
             </div>
           </Link>
         </div>

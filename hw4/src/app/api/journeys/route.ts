@@ -83,7 +83,7 @@ export async function PUT(req: NextRequest) {
       })
       .where(and(eq(journeysTable.displayId, journeyId)))
       .execute();
-      console.log(ret_journey)
+      // console.log(ret_journey)
     // pusher
     // const pusher = new Pusher({
     //   appId: privateEnv.PUSHER_ID,
