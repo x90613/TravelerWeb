@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { LuPin, LuTrash2 } from "react-icons/lu";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 import { useSession } from "next-auth/react";
 
@@ -55,6 +57,15 @@ function JourneyItem({
   const [modalOpen, setModalOpen] = useState(false);
   const { deleteJourney } = useJourney();
 
+  const titleRef = useRef<HTMLInputElement>(null);
+  const startRef = useRef<HTMLInputElement>(null);
+  const endRef = useRef<HTMLInputElement>(null);
+  const locationRef = useRef<HTMLInputElement>(null);
+  const noteRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+  }, []);
+
   const handleDelete = async () => {
     try {
       const ret = await deleteJourney(journey.journeyId);
@@ -81,12 +92,73 @@ function JourneyItem({
     >
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Delete a message</DialogTitle>
+          <DialogTitle>Edit</DialogTitle>
           <DialogDescription>
-            Delete a message, you can choose to either delete it for yourself or
-            for everyone. Note that this action cannot be undone.
+            You can edit your journey here or delete it.
           </DialogDescription>
         </DialogHeader>
+        <div>
+        <div className="grid gap-4 py-2">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="username" className="text-right">
+                title
+              </Label>
+              <Input
+                ref={titleRef}
+                placeholder=""
+                className="w-fit"
+              />
+            </div>
+            </div>
+            <div className="grid gap-4 py-2">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="username" className="text-right">
+                  start
+                </Label>
+                <Input
+                  ref={startRef}
+                  placeholder=""
+                  className="w-fit"
+                />
+              </div>
+            </div>
+            <div className="grid gap-4 py-2">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="username" className="text-right">
+                  end
+                </Label>
+                <Input
+                  ref={endRef}
+                  placeholder=""
+                  className="w-fit"
+                />
+              </div>
+            </div>
+            <div className="grid gap-4 py-2">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="username" className="text-right">
+                  location
+                </Label>
+                <Input
+                  ref={locationRef}
+                  placeholder=""
+                  className="w-fit"
+                />
+              </div>
+          </div>
+          <div className="grid gap-4 py-2">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="username" className="text-right">
+                note
+              </Label>
+              <Input
+                ref={noteRef}
+                placeholder=""
+                className="w-fit"
+              />
+            </div>
+          </div>
+        </div>  
         <DialogFooter>
           <Button
             onClick={async () => {
