@@ -1,11 +1,11 @@
 "use client";
 
-// import MessengerBar from "@/components/MessengerBar";
+import ContentBar from "@/components/ContentBar";
 
 export default function ChatPage() {
   return (
     <div>
-      {/* <MessengerBar /> */}
+      <ContentBar />
     </div>
   );
 }

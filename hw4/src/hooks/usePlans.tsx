@@ -69,7 +69,6 @@ export function PlansProvider({ children }: { children: React.ReactNode }) {
     }
     return data;
   };
-
   
   const addPlan = async (planName: string, description:string) => {
     const res = await fetch(`/api/plans`, {
@@ -88,7 +87,7 @@ export function PlansProvider({ children }: { children: React.ReactNode }) {
     }
     const data = await res.json();
     console.log(data)
-    await fetchPlans();
+    await fetchPlans();   // 同時會觸發相依的useEffect()
     return data;
   };
 

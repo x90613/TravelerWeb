@@ -20,7 +20,7 @@ type PusherPayload = {
 type JourneyContextType = {
   journeys: any;
   currentPlan: any;
-  sendJourney: any;
+  addJourney: any;
   deleteJourney: any;
 };
 
@@ -121,7 +121,7 @@ export function JourneyProvider({ children }: { children: React.ReactNode }) {
   //   }
   // }, [chatrooms, router, pathname, chatId])
 
-  const sendJourney = async (content: string) => {
+  const addJourney = async (title: string, start: string, end: string, location: string ,note: string) => {
     const res = await fetch(`/api/journeys`, {
       method: "POST",
       headers: {
@@ -129,11 +129,11 @@ export function JourneyProvider({ children }: { children: React.ReactNode }) {
       },
       body: JSON.stringify({
         planId: planId,
-        title: "test",
-        start: "test",
-        end: "test",
-        location: "test",
-        note: "test",
+        title: title,
+        start: start,
+        end: end,
+        location: location,
+        note: note,
       }),
     });
     if (!res.ok) {
@@ -142,6 +142,7 @@ export function JourneyProvider({ children }: { children: React.ReactNode }) {
     const data = await res.json();
     await fetchJourneys(); // 更新Journeys
     fetchPlans(); // 更新plan
+    // console.log(data)
     return data;
   };
 
@@ -166,7 +167,7 @@ export function JourneyProvider({ children }: { children: React.ReactNode }) {
       value={{
         journeys,
         currentPlan,
-        sendJourney,
+        addJourney,
         deleteJourney,
       }}
     >

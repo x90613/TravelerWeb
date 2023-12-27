@@ -49,7 +49,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json(
       {
-        message: res,
+        journey: res,
       },
       { status: 200 },
     );
