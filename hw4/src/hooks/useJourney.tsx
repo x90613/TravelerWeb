@@ -23,6 +23,7 @@ type JourneyContextType = {
   currentPlan: any;
   addJourney: any;
   deleteJourney: any;
+  updateJourney: any;
 };
 
 const JourneyContext = createContext<JourneyContextType | null>(null);
@@ -166,6 +167,31 @@ export function JourneyProvider({ children }: { children: React.ReactNode }) {
     return data;
   };
 
+  const updateJourney = async(journeyId: string, title: string, start: string, end: string, location: string ,note: string) => {
+    const res = await fetch(`/api/journeys`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        journeyId: journeyId,
+        title: title,
+        start: start,
+        end: end,
+        location: location,
+        note: note,
+      })
+    })
+    if (!res.ok) {
+      return res;
+    }
+    const data = await res.json();
+    await fetchJourneys();
+    fetchPlans();
+    return data;
+  }
+
+
   return (
     <JourneyContext.Provider
       value={{
@@ -173,6 +199,7 @@ export function JourneyProvider({ children }: { children: React.ReactNode }) {
         currentPlan,
         addJourney,
         deleteJourney,
+        updateJourney,
       }}
     >
       {children}

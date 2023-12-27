@@ -81,7 +81,7 @@ export default function AddPlanButton() {
         <div className="grid gap-4 py-2">
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="username" className="text-right">
-              Name
+              name
             </Label>
             <Input
               ref={planNameRef}

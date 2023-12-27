@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { MutableRefObject, useEffect, useRef, useState } from "react";
 import { LuPin, LuTrash2 } from "react-icons/lu";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -55,7 +55,7 @@ function JourneyItem({
   userId: string | undefined;
 }) {
   const [modalOpen, setModalOpen] = useState(false);
-  const { deleteJourney } = useJourney();
+  const { deleteJourney, updateJourney } = useJourney();
 
   const titleRef = useRef<HTMLInputElement>(null);
   const startRef = useRef<HTMLInputElement>(null);
@@ -82,6 +82,29 @@ function JourneyItem({
     }
   };
 
+  const handleUpdate = async () => {
+    const title = titleRef.current?.value;
+    const start = startRef.current?.value;
+    const end = endRef.current?.value;
+    const location = locationRef.current?.value;
+    const note = noteRef.current?.value;
+    const journeyId = journey.journeyId
+
+    try {
+      const ret = await updateJourney(journeyId, title, start, end, location, note);
+      if (!ret.journey && !ret.ok) {
+        const body = await ret.json();
+        alert(body.error);
+        return false;
+      }
+
+      setModalOpen(false);
+    } catch (e) {
+      console.error(e);
+      alert(e);
+    }
+  };
+
 
   const dialog = (
     <Dialog
@@ -92,9 +115,9 @@ function JourneyItem({
     >
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Edit</DialogTitle>
+          <DialogTitle>Journey editer</DialogTitle>
           <DialogDescription>
-            You can edit your journey here or delete it.
+            Edit or Delete your journey.
           </DialogDescription>
         </DialogHeader>
         <div>
@@ -105,6 +128,7 @@ function JourneyItem({
               </Label>
               <Input
                 ref={titleRef}
+                defaultValue={journey.title}
                 placeholder=""
                 className="w-fit"
               />
@@ -117,6 +141,7 @@ function JourneyItem({
                 </Label>
                 <Input
                   ref={startRef}
+                  defaultValue={journey.start}
                   placeholder=""
                   className="w-fit"
                 />
@@ -129,6 +154,7 @@ function JourneyItem({
                 </Label>
                 <Input
                   ref={endRef}
+                  defaultValue={journey.end}
                   placeholder=""
                   className="w-fit"
                 />
@@ -141,6 +167,7 @@ function JourneyItem({
                 </Label>
                 <Input
                   ref={locationRef}
+                  defaultValue={journey.location}
                   placeholder=""
                   className="w-fit"
                 />
@@ -153,6 +180,7 @@ function JourneyItem({
               </Label>
               <Input
                 ref={noteRef}
+                defaultValue={journey.note}
                 placeholder=""
                 className="w-fit"
               />
@@ -167,6 +195,14 @@ function JourneyItem({
             }}
           >
             Delete
+          </Button>
+          <Button
+            onClick={async () => {
+              await handleUpdate();
+              setModalOpen(false);
+            }}
+          >
+            done
           </Button>
         </DialogFooter>
       </DialogContent>
