@@ -102,25 +102,16 @@ function JourneyItem({
   );
 
 
-  // const replaceUrl = (text: string) => {
-  //   const urlRegex = /(https?:\/\/[^\s]+)/g;
-  //   return text.replace(urlRegex, (url) => {
-  //     return `<a href="${url}" target="_blank" class="no-underline hover:underline text-blue-500 ${
-  //       isSender ? "text-sky-300" : "text-blue-500"
-  //     }"><p> ${url} </p></a>`;
-  //   });
-  // };
-
   return (
     <>
       <button onClick={() => {
           setModalOpen(true);
-        }} className="w-full pt-1">
+        }} className="flex w-1/2 pt-1">
         <div key={"dm1"} className="w-full pt-1">
           <div
             className={`flex flex-row items-end gap-2`}
           >
-            <button className="relative border-2 m-4 p-4 w-1/2 rounded-lg">
+            <button className="relative border-2 m-4 p-4 w-full rounded-lg">
               <div className="flex justify-between items-start">
                 <div className="flex">
                   <div className="font-bold m-1 p-1">Title</div>

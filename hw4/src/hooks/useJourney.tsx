@@ -12,6 +12,7 @@ import { useParams, useRouter, usePathname } from "next/navigation";
 import { pusherClient } from "@/lib/pusher/client";
 
 import usePlans from "./usePlans";
+import { Palanquin } from "next/font/google";
 
 type PusherPayload = {
   senderId: string;
@@ -39,8 +40,11 @@ export function JourneyProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (!planId) return;
-    // find the chatroom
-    const plan = plans.find((plan: { id: string | string[]; }) => plan.id === planId);
+    // find the plan
+    // console.log("plans:",plans)
+    // console.log("planId:",planId)
+    const plan = plans.find((plan) => plan.planId === planId);
+    console.log("use effect抓plan:", plan)
 
     setCurrentPlan(plan);
   }, [planId, plans]);
