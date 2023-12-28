@@ -1,22 +1,22 @@
 "use client";
 
 import { LuPinOff, LuMegaphone } from "react-icons/lu";
-
 import { useSession } from "next-auth/react";
 
-
-// import MessagesViewer from "@/components/MessagesViewr";
 import AddJourneyButton from "@/components/AddJourneyButton";
 import { useJourney } from "@/hooks/useJourney";
 import JourneysViewer from "@/components/JourneysViewer";
 import EditPlanButton from "@/components/EditPlanButton";
+import usePlans from "@/hooks/usePlans";
+import { useEffect } from "react";
 
 export default function ContentBar() {
   const { data: session } = useSession();
   const userId = session?.user?.id;
 
   const { journeys, currentPlan } = useJourney();
-
+  console.log("currentPlan12312",currentPlan)
+  
 
   return (
     <>
@@ -34,20 +34,12 @@ export default function ContentBar() {
 
 function ContentBarHeader({
   currentPlan,
-  userId,
 }: {
   currentPlan: any;
   userId: string | undefined;
 }) {
-  // if (!currentPlan) return null;
-  // const replaceUrl = (text: string) => {
-  //   const urlRegex = /(https?:\/\/[^\s]+)/g;
-  //   return text.replace(urlRegex, (url) => {
-  //     return ` <a href="${url}" target="_blank" class="no-underline hover:underline text-blue-500"><p> ${url} </p></a> `;
-  //   });
-  // };
-
-  const currentPlanName = currentPlan?.plan.name // 沒有時，留白
+  let currentPlanName = currentPlan?.plan.name // 沒有時，留白
+ 
 
   return (
     <>

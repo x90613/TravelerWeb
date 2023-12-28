@@ -39,6 +39,7 @@ export async function GET(req: NextRequest) {
           columns: {
             displayId: true,
             name: true,
+            description: true,
           },
         },
       },

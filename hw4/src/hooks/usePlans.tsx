@@ -26,8 +26,8 @@ export function PlansProvider({ children }: { children: React.ReactNode }) {
   const { data: session } = useSession();
   const userId = session?.user?.id;
   const userToken = session?.user?.token;
-  console.log("userToken", userToken);
-  console.log("userId", userId);
+  // console.log("userToken", userToken);
+  // console.log("userId", userId);
   const currentPlanId = useParams().planId;
   const router = useRouter();
 

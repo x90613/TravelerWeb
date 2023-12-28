@@ -39,14 +39,9 @@ export default async function RedirectPage() {
       // const firstChatroomId = chatrooms[0].id;
       // const firstPlan = plans.id;
 
-      // redirect
-      // redirect(`${publicEnv.NEXT_PUBLIC_BASE_URL}/chat/${firstChatroomId}`);
       redirect(`/plan/${plans}`)
-      // router.push(`/chat/${firstChatroomId}`);
     } catch (e) {
-      // redirect(`${publicEnv.NEXT_PUBLIC_BASE_URL}/chat`);
       redirect(`/plan`)
-      // router.push(`/chat`);
     }
   };
 

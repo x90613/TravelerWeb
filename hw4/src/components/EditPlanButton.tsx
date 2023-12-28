@@ -29,7 +29,7 @@ export default function EditPlanButton() {
   const { currentPlan } = useJourney();
 
   const currentPlanName = currentPlan?.plan.name // 沒有時，留白
-  const currentPlanDescription = currentPlan?.description // 沒有時，留白
+  const currentPlanDescription = currentPlan?.plan.description // 沒有時，留白
   
   const planNameRef = useRef<HTMLInputElement>(null);
   const planDescriptionRef = useRef<HTMLInputElement>(null);
@@ -61,8 +61,6 @@ export default function EditPlanButton() {
       const planId = newPlan.displayId;
 
       setModalOpen(false);
-      router.refresh()
-      router.push(`/plan/${planId}`)
     } catch (e) {
       console.error(e);
       alert(e);
@@ -78,7 +76,7 @@ export default function EditPlanButton() {
     >
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Add a new plan</DialogTitle>
+          <DialogTitle>Edit the plan</DialogTitle>
           <DialogDescription>
             Edit a new plan!
             Please enter the plan name & the description.
@@ -111,7 +109,7 @@ export default function EditPlanButton() {
           </div>
         </div>
         <DialogFooter>
-          <Button onClick={handleUpdate}>Add</Button>
+          <Button onClick={handleUpdate}>Update</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
