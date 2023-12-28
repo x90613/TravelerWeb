@@ -3,96 +3,41 @@
 import { useState } from "react";
 
 import { signIn } from "next-auth/react";
+import Image from "next/image";
 
 // Run: npx shadcn-ui@latest add button
 import { Button } from "@/components/ui/button";
 // Run: npx shadcn-ui@latest add card
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import usePlans from "@/hooks/usePlans";
 import { publicEnv } from "@/lib/env/public";
 
 import AuthInput from "./AuthInput";
 
 function AuthForm() {
-  const [username, setUsername] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [confirmPassword, setConfirmPassword] = useState<string>("");
-  const [isSignUp, setIsSignUp] = useState<boolean>(false);
-
-  const { fetchPlans } = usePlans();
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    try {
-      signIn("credentials", {
-        username,
-        password,
-        callbackUrl: `${publicEnv.NEXT_PUBLIC_BASE_URL}/plan`,
-      });
-      await fetchPlans();
-    } catch (err) {
-      alert("Invalid Credentials");
-    }
-  };
   return (
-    <Card className="min-w-[300px]">
-      <CardHeader>
-        <CardTitle>Sign {isSignUp ? "Up" : "In"}</CardTitle>
-      </CardHeader>
-      <CardContent className=" flex flex-col gap-2">
-        <form onSubmit={handleSubmit} className="flex flex-col gap-2">
-          {
-            <AuthInput
-              label="Username"
-              type="text"
-              value={username}
-              setValue={setUsername}
-            />
-          }
-          <AuthInput
-            label="Password"
-            type="password"
-            value={password}
-            setValue={setPassword}
-          />
-          {isSignUp && (
-            <AuthInput
-              label="Confirm Password"
-              type="password"
-              value={confirmPassword}
-              setValue={setConfirmPassword}
-            />
-          )}
-          <div className="text-sm text-gray-500">
-            {isSignUp ? (
-              <span>
-                Already have an account?{" "}
-                <a
-                  className="cursor-pointer hover:underline"
-                  onClick={() => setIsSignUp(false)}
-                >
-                  Sign In
-                </a>
-              </span>
-            ) : (
-              <span>
-                Do not have an account?{" "}
-                <a
-                  className="cursor-pointer hover:underline"
-                  onClick={() => setIsSignUp(true)}
-                >
-                  Sign Up
-                </a>
-              </span>
-            )}
-          </div>
-
-          <Button type="submit" className="w-full">
-            Sign {isSignUp ? "Up" : "In"}
+    <>
+      <Card className="min-w-[300px]">
+        <CardHeader>
+          <CardTitle>Sign {"In"}</CardTitle>
+        </CardHeader>
+        <CardContent className=" flex flex-col gap-2">
+          <Button
+            onClick={async () => {
+              // TODO: sign in with google
+              signIn("google", {
+                callbackUrl: `${publicEnv.NEXT_PUBLIC_BASE_URL}/plan`,
+              });
+            }}
+            className="flex w-full"
+            variant={"outline"}
+          >
+            {/* Remember to copy "github.png" to ./public folder */}
+            <Image src="/google.png" alt="google icon" width={20} height={20} />
+            <span className="grow">Sign In with google</span>
           </Button>
-        </form>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+    </>
   );
 }
 

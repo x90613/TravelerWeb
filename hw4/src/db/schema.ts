@@ -18,18 +18,19 @@ export const usersTable = pgTable(
     id: serial("id").primaryKey(),
     displayId: uuid("display_id").defaultRandom().notNull().unique(),
     username: varchar("username", { length: 100 }).notNull(),
-    // email: varchar("email", { length: 100 }).notNull().unique(),
+    email: varchar("email", { length: 100 }).notNull().unique(),
     hashedPassword: varchar("hashed_password", { length: 100 }),
+    token: varchar("access_token"),
     provider: varchar("provider", {
       length: 100,
-      enum: ["github", "credentials"],
+      enum: ["github", "credentials","google"],
     })
       .notNull()
       .default("credentials"),
   },
   (table) => ({
     displayIdIndex: index("display_id_index").on(table.displayId),
-    emailIndex: index("username_index").on(table.username),
+    emailIndex: index("username_index").on(table.email),
   }),
 );
 

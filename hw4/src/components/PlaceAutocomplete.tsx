@@ -1,0 +1,50 @@
+import React, { useState, useEffect, useRef } from "react";
+
+import { Loader } from "@googlemaps/js-api-loader";
+
+interface PlaceAutocompleteProps {
+  onPlaceSelected: (place: google.maps.places.PlaceResult) => void;
+}
+
+const PlaceAutocomplete: React.FC<PlaceAutocompleteProps> = ({
+  onPlaceSelected,
+}) => {
+  const autocompleteInput = useRef<HTMLInputElement>(null);
+  const [autocomplete, setAutocomplete] =
+    useState<google.maps.places.Autocomplete | null>(null);
+
+  useEffect(() => {
+    const loader = new Loader({
+      apiKey: "AIzaSyDnsTz5TEInTzvpMjqT4SED449TiX3hhOM", // 你的 API key
+      libraries: ["places"],
+    });
+
+    loader.load().then(() => {
+      if (autocompleteInput.current) {
+        const autocompleteInstance = new window.google.maps.places.Autocomplete(
+          autocompleteInput.current,
+        );
+
+        autocompleteInstance.addListener("place_changed", () => {
+          const place = autocompleteInstance.getPlace();
+          if (place.geometry) {
+            onPlaceSelected(place);
+          }
+        });
+
+        setAutocomplete(autocompleteInstance);
+      }
+    });
+  }, [onPlaceSelected]);
+
+  return (
+    <input
+      className="h-8 w-fit rounded-md border border-gray-300 px-2"
+      ref={autocompleteInput}
+      type="text"
+      placeholder="Enter your address"
+    />
+  );
+};
+
+export default PlaceAutocomplete;

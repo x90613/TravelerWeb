@@ -1,9 +1,9 @@
 import { MutableRefObject, useEffect, useRef, useState } from "react";
 import { LuPin, LuTrash2 } from "react-icons/lu";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 
 import { useSession } from "next-auth/react";
+
+import { Loader } from "@googlemaps/js-api-loader";
 
 import {
   Dialog,
@@ -13,6 +13,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { useJourney } from "@/hooks/useJourney";
 
 import { Button } from "./ui/button";
@@ -34,7 +36,7 @@ export default function JourneyViewer({ journeys }: Props) {
   return (
     <div className="grow overflow-y-scroll">
       <div className="px-2 pt-4">
-        {journeys.map((journey: { journeyId: any; }) => (
+        {journeys.map((journey: { journeyId: any }) => (
           <JourneyItem
             journey={journey}
             userId={userId}
@@ -63,8 +65,50 @@ function JourneyItem({
   const locationRef = useRef<HTMLInputElement>(null);
   const noteRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-  }, []);
+  interface PlaceAutocompleteProps {
+    onPlaceSelected: (place: google.maps.places.PlaceResult) => void;
+  }
+
+  const PlaceAutocomplete: React.FC<PlaceAutocompleteProps> = ({
+    onPlaceSelected,
+  }) => {
+    const autocompleteInput = useRef<HTMLInputElement>(null);
+    const [autocomplete, setAutocomplete] =
+      useState<google.maps.places.Autocomplete | null>(null);
+
+    useEffect(() => {
+      const loader = new Loader({
+        apiKey: "AIzaSyDnsTz5TEInTzvpMjqT4SED449TiX3hhOM", // 你的 API key
+        libraries: ["places"],
+      });
+
+      loader.load().then(() => {
+        if (locationRef.current) {
+          const autocompleteInstance =
+            new window.google.maps.places.Autocomplete(locationRef.current);
+
+          autocompleteInstance.addListener("place_changed", () => {
+            const place = autocompleteInstance.getPlace();
+            if (place.geometry) {
+              onPlaceSelected(place);
+            }
+          });
+
+          setAutocomplete(autocompleteInstance);
+        }
+      });
+    }, [onPlaceSelected]);
+
+    return (
+      <input
+        className="h-8 w-fit rounded-md border border-gray-300 px-2"
+        ref={autocompleteInput}
+        type="text"
+        placeholder="Enter your address"
+      />
+    );
+  };
+  useEffect(() => {}, []);
 
   const handleDelete = async () => {
     try {
@@ -88,10 +132,17 @@ function JourneyItem({
     const end = endRef.current?.value;
     const location = locationRef.current?.value;
     const note = noteRef.current?.value;
-    const journeyId = journey.journeyId
+    const journeyId = journey.journeyId;
 
     try {
-      const ret = await updateJourney(journeyId, title, start, end, location, note);
+      const ret = await updateJourney(
+        journeyId,
+        title,
+        start,
+        end,
+        location,
+        note,
+      );
       if (!ret.journey && !ret.ok) {
         const body = await ret.json();
         alert(body.error);
@@ -105,7 +156,6 @@ function JourneyItem({
     }
   };
 
-
   const dialog = (
     <Dialog
       open={modalOpen}
@@ -116,12 +166,10 @@ function JourneyItem({
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Journey editer</DialogTitle>
-          <DialogDescription>
-            Edit or Delete your journey.
-          </DialogDescription>
+          <DialogDescription>Edit or Delete your journey.</DialogDescription>
         </DialogHeader>
         <div>
-        <div className="grid gap-4 py-2">
+          <div className="grid gap-4 py-2">
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="username" className="text-right">
                 title
@@ -133,45 +181,46 @@ function JourneyItem({
                 className="w-fit"
               />
             </div>
+          </div>
+          <div className="grid gap-4 py-2">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="username" className="text-right">
+                start
+              </Label>
+              <Input
+                ref={startRef}
+                defaultValue={journey.start}
+                placeholder=""
+                className="w-fit"
+              />
             </div>
-            <div className="grid gap-4 py-2">
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="username" className="text-right">
-                  start
-                </Label>
-                <Input
-                  ref={startRef}
-                  defaultValue={journey.start}
-                  placeholder=""
-                  className="w-fit"
-                />
-              </div>
+          </div>
+          <div className="grid gap-4 py-2">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="username" className="text-right">
+                end
+              </Label>
+              <Input
+                ref={endRef}
+                defaultValue={journey.end}
+                placeholder=""
+                className="w-fit"
+              />
             </div>
-            <div className="grid gap-4 py-2">
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="username" className="text-right">
-                  end
-                </Label>
-                <Input
-                  ref={endRef}
-                  defaultValue={journey.end}
-                  placeholder=""
-                  className="w-fit"
-                />
-              </div>
+          </div>
+          <div className="grid gap-4 py-2">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="username" className="text-right">
+                location
+              </Label>
+              {/* <PlaceAutocomplete onPlaceSelected={() => null} /> */}
+              <Input
+                ref={locationRef}
+                defaultValue={journey.location}
+                placeholder=""
+                className="w-fit"
+              />
             </div>
-            <div className="grid gap-4 py-2">
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="username" className="text-right">
-                  location
-                </Label>
-                <Input
-                  ref={locationRef}
-                  defaultValue={journey.location}
-                  placeholder=""
-                  className="w-fit"
-                />
-              </div>
           </div>
           <div className="grid gap-4 py-2">
             <div className="grid grid-cols-4 items-center gap-4">
@@ -186,7 +235,7 @@ function JourneyItem({
               />
             </div>
           </div>
-        </div>  
+        </div>
         <DialogFooter>
           <Button
             onClick={async () => {
@@ -209,21 +258,23 @@ function JourneyItem({
     </Dialog>
   );
 
-
   return (
     <>
-      <button onClick={() => {
+      <button
+        onClick={() => {
           setModalOpen(true);
-        }} className="flex w-1/2 pt-1">
+        }}
+        className="flex w-1/2 pt-1"
+      >
         <div key={"dm1"} className="w-full pt-1">
-          <div
-            className={`flex flex-row items-end gap-2`}
-          >
-            <button className="relative border-2 m-4 p-4 w-full rounded-lg">
-              <div className="flex justify-between items-start">
+          <div className={`flex flex-row items-end gap-2`}>
+            <button className="relative m-4 w-full rounded-lg border-2 p-4">
+              <div className="flex items-start justify-between">
                 <div className="flex">
-                  <div className="font-bold m-1 p-1">Title</div>
-                  <div className="border m-1 p-1 rounded-lg">{journey.title}</div>
+                  <div className="m-1 p-1 font-bold">Title</div>
+                  <div className="m-1 rounded-lg border p-1">
+                    {journey.title}
+                  </div>
                 </div>
                 {/* <button
                   onClick={handleDelete}
@@ -232,29 +283,35 @@ function JourneyItem({
                   X
                 </button> */}
               </div>
-              <div className="flex justify-even w-full">
+              <div className="justify-even flex w-full">
                 <div className="flex">
-                  <div className="font-bold m-1 p-1">Start</div>
-                  <div className="border m-1 p-1 rounded-lg">{journey.start}</div>
+                  <div className="m-1 p-1 font-bold">Start</div>
+                  <div className="m-1 rounded-lg border p-1">
+                    {journey.start}
+                  </div>
                 </div>
                 <div className="flex">
-                  <div className="font-bold m-1 p-1">⁀➴ End</div>
-                  <div className="border m-1 p-1 rounded-lg">{journey.end}</div>
+                  <div className="m-1 p-1 font-bold">⁀➴ End</div>
+                  <div className="m-1 rounded-lg border p-1">{journey.end}</div>
                 </div>
               </div>
               <div className="flex">
-                <div className="font-bold m-1 p-1">Location</div>
-                <div className="border m-1 p-1 rounded-lg">{journey.location}</div>
+                <div className="m-1 p-1 font-bold">Location</div>
+                <div className="m-1 rounded-lg border p-1">
+                  {journey.location}
+                </div>
               </div>
               <div className="flex">
-                <div className="font-bold m-1 p-1">Note</div>
-                <div className="border m-1 p-1 rounded-lg break-words">{journey.note}</div>
+                <div className="m-1 p-1 font-bold">Note</div>
+                <div className="m-1 break-words rounded-lg border p-1">
+                  {journey.note}
+                </div>
               </div>
             </button>
           </div>
           {modalOpen && dialog}
         </div>
-        </button>
+      </button>
     </>
   );
 }
