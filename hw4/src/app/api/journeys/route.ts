@@ -69,8 +69,6 @@ export async function PUT(req: NextRequest) {
 
     const { journeyId, title, start, end, location, note } = await req.json();
 
-    // console.log("journeysTable.displayId: ",journeysTable.displayId)
-    console.log("journeyId:", journeyId)
 
     let ret_journey = await db
       .update(journeysTable)

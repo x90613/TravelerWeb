@@ -16,6 +16,7 @@ type PlansContextType = {
   fetchPlans: any;
   deletePlan: any;
   addPlan: any;
+  updatePlan: any;
 };
 
 const PlansContext = createContext<PlansContextType | null>(null);
@@ -92,6 +93,28 @@ export function PlansProvider({ children }: { children: React.ReactNode }) {
     return data;
   };
 
+  const updatePlan = async (planId:string, planName: string, planDescription: string) => {
+    const res = await fetch(`/api/plans`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        planId: planId,
+        name: planName,
+        description: planDescription,
+      }),
+    });
+    if (!res.ok) {
+      console.log("fail");
+      return res;
+    }
+    const data = await res.json();
+    await fetchPlans(); // 同時會觸發相依的useEffect()
+    return data;
+  };
+
+  
   // const exportPlan = async();
 
   return (
@@ -101,6 +124,7 @@ export function PlansProvider({ children }: { children: React.ReactNode }) {
         fetchPlans,
         deletePlan,
         addPlan,
+        updatePlan,
       }}
     >
       {children}

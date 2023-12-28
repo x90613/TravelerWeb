@@ -8,7 +8,8 @@ import { useSession } from "next-auth/react";
 // import MessagesViewer from "@/components/MessagesViewr";
 import AddJourneyButton from "@/components/AddJourneyButton";
 import { useJourney } from "@/hooks/useJourney";
-import JourneysViewer from "./JourneysViewer";
+import JourneysViewer from "@/components/JourneysViewer";
+import EditPlanButton from "@/components/EditPlanButton";
 
 export default function ContentBar() {
   const { data: session } = useSession();
@@ -16,12 +17,14 @@ export default function ContentBar() {
 
   const { journeys, currentPlan } = useJourney();
 
+
   return (
     <>
       <div className="h-screen w-full">
         <div className="flex h-full w-full flex-col overflow-hidden shadow-lg">
           <ContentBarHeader currentPlan={currentPlan} userId={userId} />
           <JourneysViewer journeys={journeys} />
+          <EditPlanButton/>
           <AddJourneyButton/>
         </div>
       </div>
