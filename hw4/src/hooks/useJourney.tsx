@@ -24,6 +24,7 @@ type JourneyContextType = {
   addJourney: any;
   deleteJourney: any;
   updateJourney: any;
+  exportJourney: any;
 };
 
 const JourneyContext = createContext<JourneyContextType | null>(null);
@@ -200,6 +201,19 @@ export function JourneyProvider({ children }: { children: React.ReactNode }) {
     return data;
   };
 
+  // exportJourney
+  const exportJourney = async (planId: string) => {
+    const res = await fetch("/api/journeys/export", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        planId: planId,
+      }),
+    });
+  };
+
   return (
     <JourneyContext.Provider
       value={{
@@ -208,6 +222,7 @@ export function JourneyProvider({ children }: { children: React.ReactNode }) {
         addJourney,
         deleteJourney,
         updateJourney,
+        exportJourney,
       }}
     >
       {children}

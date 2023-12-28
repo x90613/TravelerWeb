@@ -3,6 +3,7 @@
 import { LuPinOff, LuMegaphone } from "react-icons/lu";
 import { useSession } from "next-auth/react";
 
+
 import AddJourneyButton from "@/components/AddJourneyButton";
 import { useJourney } from "@/hooks/useJourney";
 import JourneysViewer from "@/components/JourneysViewer";
@@ -14,9 +15,8 @@ export default function ContentBar() {
   const { data: session } = useSession();
   const userId = session?.user?.id;
 
-  const { journeys, currentPlan } = useJourney();
-  console.log("currentPlan12312",currentPlan)
-  
+  const { journeys, currentPlan, exportJourney } = useJourney();
+
 
   return (
     <>
@@ -24,7 +24,16 @@ export default function ContentBar() {
         <div className="flex h-full w-full flex-col overflow-hidden shadow-lg">
           <ContentBarHeader currentPlan={currentPlan} userId={userId} />
           <JourneysViewer journeys={journeys} />
-          <AddJourneyButton/>
+          <AddJourneyButton />
+          <button
+            className="rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
+            onClick={() => {
+              exportJourney();
+            }}
+          >
+            {" "}
+            export Calendar
+          </button>
         </div>
       </div>
     </>
@@ -37,12 +46,15 @@ function ContentBarHeader({
   currentPlan: any;
   userId: string | undefined;
 }) {
+
   let currentPlanName = currentPlan?.plan.name // 沒有時，留白
  
+
 
   return (
     <>
       <nav className="w-full p-3 text-lg font-semibold shadow-md">
+
         <div className="flex flex-row">
           <span className="m-2">
             {currentPlanName}
