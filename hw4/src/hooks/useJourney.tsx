@@ -7,12 +7,12 @@ import {
 } from "react";
 
 import { useSession } from "next-auth/react";
+import { Palanquin } from "next/font/google";
 import { useParams, useRouter, usePathname } from "next/navigation";
 
 import { pusherClient } from "@/lib/pusher/client";
 
 import usePlans from "./usePlans";
-import { Palanquin } from "next/font/google";
 
 type PusherPayload = {
   senderId: string;
@@ -35,7 +35,7 @@ export function JourneyProvider({ children }: { children: React.ReactNode }) {
   const userId = session?.user?.id;
   const router = useRouter();
   const pathname = usePathname();
-
+  const token = session?.user?.token;
   const [journeys, setJourneys] = useState([]);
   const [currentPlan, setCurrentPlan] = useState(null);
 
@@ -45,7 +45,7 @@ export function JourneyProvider({ children }: { children: React.ReactNode }) {
     // console.log("plans:",plans)
     // console.log("planId:",planId)
     const plan = plans.find((plan) => plan.planId === planId);
-    console.log("use effect抓plan:", plan)
+    console.log("use effect抓plan:", plan);
 
     setCurrentPlan(plan);
   }, [planId, plans]);
@@ -126,7 +126,13 @@ export function JourneyProvider({ children }: { children: React.ReactNode }) {
   //   }
   // }, [chatrooms, router, pathname, chatId])
 
-  const addJourney = async (title: string, start: string, end: string, location: string ,note: string) => {
+  const addJourney = async (
+    title: string,
+    start: string,
+    end: string,
+    location: string,
+    note: string,
+  ) => {
     const res = await fetch(`/api/journeys`, {
       method: "POST",
       headers: {
@@ -167,11 +173,18 @@ export function JourneyProvider({ children }: { children: React.ReactNode }) {
     return data;
   };
 
-  const updateJourney = async(journeyId: string, title: string, start: string, end: string, location: string ,note: string) => {
+  const updateJourney = async (
+    journeyId: string,
+    title: string,
+    start: string,
+    end: string,
+    location: string,
+    note: string,
+  ) => {
     const res = await fetch(`/api/journeys`, {
       method: "PUT",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         journeyId: journeyId,
@@ -180,8 +193,8 @@ export function JourneyProvider({ children }: { children: React.ReactNode }) {
         end: end,
         location: location,
         note: note,
-      })
-    })
+      }),
+    });
     if (!res.ok) {
       return res;
     }
@@ -189,8 +202,7 @@ export function JourneyProvider({ children }: { children: React.ReactNode }) {
     await fetchJourneys();
     fetchPlans();
     return data;
-  }
-
+  };
 
   return (
     <JourneyContext.Provider
