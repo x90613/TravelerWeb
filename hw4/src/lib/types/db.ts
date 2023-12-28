@@ -3,5 +3,6 @@ export type User = {
     username: string;
     provider: "Github" | "credentials"| "google";
     email: string;
+    token: string;
   };
   

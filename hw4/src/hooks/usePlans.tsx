@@ -24,7 +24,9 @@ export function PlansProvider({ children }: { children: React.ReactNode }) {
   const [plans, setPlans] = useState([]);
   const { data: session } = useSession();
   const userId = session?.user?.id;
-
+  const userToken = session?.user?.token;
+  console.log("userToken", userToken);
+  console.log("userId", userId);
   const currentPlanId = useParams().planId;
   const router = useRouter();
 
@@ -47,7 +49,6 @@ export function PlansProvider({ children }: { children: React.ReactNode }) {
     fetchPlans();
   }, [userId, fetchPlans]);
 
-
   const deletePlan = async (planId: string) => {
     const needToRedirect = currentPlanId === planId; // 你刪了正在使用的Plan
 
@@ -69,8 +70,8 @@ export function PlansProvider({ children }: { children: React.ReactNode }) {
     }
     return data;
   };
-  
-  const addPlan = async (planName: string, description:string) => {
+
+  const addPlan = async (planName: string, description: string) => {
     const res = await fetch(`/api/plans`, {
       method: "POST",
       headers: {
@@ -82,14 +83,16 @@ export function PlansProvider({ children }: { children: React.ReactNode }) {
       }),
     });
     if (!res.ok) {
-      console.log("fail")
+      console.log("fail");
       return res;
     }
     const data = await res.json();
-    console.log(data)
-    await fetchPlans();   // 同時會觸發相依的useEffect()
+    console.log(data);
+    await fetchPlans(); // 同時會觸發相依的useEffect()
     return data;
   };
+
+  // const exportPlan = async();
 
   return (
     <PlansContext.Provider
