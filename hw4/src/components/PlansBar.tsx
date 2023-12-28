@@ -82,9 +82,6 @@ export default function PlansBar() {
             description={p.plan.description}
           />
         ))}
-        {/* {plans.map((plan: any) => (
-          console.log(plan)
-        ))} */}
       </div>
       <div className="fixed left-3 bottom-5 p-4">
         <div className="flex flex-row">
