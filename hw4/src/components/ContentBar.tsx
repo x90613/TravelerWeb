@@ -24,7 +24,6 @@ export default function ContentBar() {
         <div className="flex h-full w-full flex-col overflow-hidden shadow-lg">
           <ContentBarHeader currentPlan={currentPlan} userId={userId} />
           <JourneysViewer journeys={journeys} />
-          <EditPlanButton/>
           <AddJourneyButton/>
         </div>
       </div>
@@ -44,10 +43,11 @@ function ContentBarHeader({
   return (
     <>
       <nav className="w-full p-3 text-lg font-semibold shadow-md">
-        <div className="flex flex-col">
-          <span>
+        <div className="flex flex-row">
+          <span className="m-2">
             {currentPlanName}
           </span>
+          <EditPlanButton/>
           {/* 此處新增 ... 來編輯Plan的name以及description */}
         </div>
       </nav>
