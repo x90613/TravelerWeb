@@ -94,20 +94,7 @@ export async function POST(req: NextRequest) {
   if (!token ) {
     throw new Error("Token is required");
   }
-  // const eventData = {
-  //   summary: "washi o lan", // summary = title
-  //   start: {
-  //     dateTime: "2023-12-29T15:00:00", // Start time in RFC3339 format
-  //     timeZone: "Asia/Taipei", // Sets the current time zone
-  //   },
-  //   end: {
-  //     dateTime: "2023-12-29T19:00:00",
-  //     timeZone: "Asia/Taipei", // Sets the current time zone
-  //   },
-  //   location: "Taipei",
-  //   description: "I wanna pass Web programming", // note = description
-  // };
-  // a function to add an event to Google Calendar
+
   const eventData = {
     summary: title, // summary = title
     start: {
@@ -139,24 +126,20 @@ export async function POST(req: NextRequest) {
     const data = await response.json();
     return data;
       };
-
-    // const eventData = {
-    //   summary: "washi o lan", // summary = title
-    //   start: {
-    //     dateTime: "2023-12-29T15:00:00", // Start time in RFC3339 format
-    //     timeZone: "Asia/Taipei", // Sets the current time zone
-    //   },
-    //   end: {
-    //     dateTime: "2023-12-29T19:00:00",
-    //     timeZone: "Asia/Taipei", // Sets the current time zone
-    //   },
-    //   location: "Taipei",
-    //   description: "I wanna pass Web programming", // note = description
-    // };
+  
+    const addEvents = async (token:string, journeys: any[], calendarId: any) => {
+      const eventPromises = journeys.map((journey: any) =>
+        addEvent(token, journey.title, journey.start, journey.end, journey.location, journey.note, calendarId)
+      );
+    
+      return Promise.all(eventPromises);
+    };
 
     
     const CalendarId = await addCalendar(token, plan.name, plan.description);
-    addEvent(token, journeys[0].title, journeys[0].start, journeys[0].end, journeys[0].location, journeys[0].note, CalendarId);
+    // addEvent(token, journeys[0].title, journeys[0].start, journeys[0].end, journeys[0].location, journeys[0].note, CalendarId);
+    // addEvent(token, journeys[1].title, journeys[1].start, journeys[1].end, journeys[1].location, journeys[1].note, CalendarId);
+    addEvents(token, processedJourneys, CalendarId);
     console.log("export complete")
 
     return NextResponse.json(
