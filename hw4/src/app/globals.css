@@ -76,13 +76,11 @@
 }
 
 
-
-.signOutText {
-  cursor: pointer;
-  transition: color 0.3s ease;
+.content-bar{
+  background-color: #FEF3C7;
 }
 
-.signOutText:hover {
-  color: #007bff; 
-  text-decoration: underline;
+
+.plan-bar{
+  background-color: #FDE68A;
 }

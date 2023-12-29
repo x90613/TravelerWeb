@@ -4,10 +4,11 @@ import { Loader } from "@googlemaps/js-api-loader";
 
 interface PlaceAutocompleteProps {
   onPlaceSelected: (place: google.maps.places.PlaceResult) => void;
+  location: string;
 }
 
 const PlaceAutocomplete = forwardRef<HTMLInputElement, PlaceAutocompleteProps>(
-  ({ onPlaceSelected }, ref) => {
+  ({ onPlaceSelected, location }, ref) => {
     const [autocomplete, setAutocomplete] =
       useState<google.maps.places.Autocomplete | null>(null);
 
@@ -38,7 +39,7 @@ const PlaceAutocomplete = forwardRef<HTMLInputElement, PlaceAutocompleteProps>(
       <input
         className="h-8 w-fit rounded-md border border-gray-300 px-2"
         ref={ref}
-        defaultValue="請輸入地址"
+        defaultValue={location}
         type="text"
         placeholder="Enter your address"
       />

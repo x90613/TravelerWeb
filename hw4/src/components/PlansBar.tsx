@@ -77,7 +77,7 @@ export default function PlansBar() {
 
   return (
     <>
-      <div className="flex flex-col">
+      <div className=" flex flex-col">
         <div className="m-1 flex flex-row items-center">
           <span className="w-full p-3 px-4 text-3xl font-bold">Traveler</span>
 

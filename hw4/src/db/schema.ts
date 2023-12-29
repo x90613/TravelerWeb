@@ -114,7 +114,7 @@ export const journeysTable = pgTable(
     title: varchar("title", { length: 100 }).notNull(),
     start: varchar("start").notNull(),
     end: varchar("end").notNull(),
-    location: varchar("location", { length: 100 }).notNull(),
+    location: varchar("location").notNull(),
     note: varchar("note", { length: 100 }).notNull(),
     plansId: uuid("plans_id") // 外來鍵(如果plan刪掉，journey也要一併刪除)
   },

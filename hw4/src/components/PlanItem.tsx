@@ -33,7 +33,7 @@ export default function PlanItem({ planId, name, description }: PlanItemProps) {
   const signOutVariants = {
     hover: {
       scale: 1.1,
-      color: "#007bff", // 选择一个合适的颜色
+      color: "#007bff", // color
       transition: {
         type: "spring",
         stiffness: 300,

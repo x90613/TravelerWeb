@@ -40,7 +40,7 @@ export default function ContentBar() {
   };
   return (
     <>
-      <div className="h-screen w-full">
+      <div className="content-bar h-screen w-full">
         <div className="flex h-full w-full flex-col overflow-hidden shadow-lg ">
           <ContentBarHeader currentPlan={currentPlan} userId={userId} />
 

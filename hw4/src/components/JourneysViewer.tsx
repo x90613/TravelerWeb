@@ -37,7 +37,7 @@ export default function JourneyViewer({ journeys }: Props) {
 
   return (
     <div className="grow overflow-y-scroll">
-      <div className="px-2 pt-4">
+      <div className="px-2 pl-20 pt-4">
         {journeys.map((journey: { journeyId: any }) => (
           <JourneyItem
             journey={journey}
@@ -151,6 +151,7 @@ function JourneyItem({
                 start
               </Label>
               <Input
+                type="datetime-local"
                 ref={startRef}
                 defaultValue={journey.start}
                 placeholder=""
@@ -164,6 +165,7 @@ function JourneyItem({
                 end
               </Label>
               <Input
+                type="datetime-local"
                 ref={endRef}
                 defaultValue={journey.end}
                 placeholder=""
@@ -180,6 +182,7 @@ function JourneyItem({
               <PlaceAutocomplete
                 ref={locationRef}
                 onPlaceSelected={handlePlaceSelect}
+                location={journey.location}
               />
               {/* <Input
                 ref={locationRef}
@@ -241,11 +244,11 @@ function JourneyItem({
         >
           <div key={"dm1"} className="w-full pt-1">
             <div className={`flex flex-row items-end gap-2`}>
-              <button className="relative m-4 w-full rounded-lg border-2 p-4">
+              <button className="relative m-7 w-full rounded-lg border-2 border-black  p-4  shadow-2xl">
                 <div className="flex items-start justify-between">
                   <div className="flex">
                     <div className="m-1 p-1 font-bold">Title</div>
-                    <div className="m-1 rounded-lg border p-1">
+                    <div className="m-1 rounded-lg border border-black p-1">
                       {journey.title}
                     </div>
                   </div>
@@ -259,26 +262,26 @@ function JourneyItem({
                 <div className="justify-even flex w-full">
                   <div className="flex">
                     <div className="m-1 p-1 font-bold">Start</div>
-                    <div className="m-1 rounded-lg border p-1">
+                    <div className="m-1 rounded-lg border border-black p-1">
                       {journey.start}
                     </div>
                   </div>
                   <div className="flex">
                     <div className="m-1 p-1 font-bold">⁀➴ End</div>
-                    <div className="m-1 rounded-lg border p-1">
+                    <div className="m-1 rounded-lg border border-black p-1">
                       {journey.end}
                     </div>
                   </div>
                 </div>
                 <div className="flex">
                   <div className="m-1 p-1 font-bold">Location</div>
-                  <div className="m-1 rounded-lg border p-1">
+                  <div className="m-1 rounded-lg border border-black p-1">
                     {journey.location}
                   </div>
                 </div>
                 <div className="flex">
                   <div className="m-1 p-1 font-bold">Note</div>
-                  <div className="m-1 break-words rounded-lg border p-1">
+                  <div className="m-1 break-words rounded-lg border border-black p-1">
                     {journey.note}
                   </div>
                 </div>
