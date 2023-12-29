@@ -16,7 +16,7 @@ import AuthInput from "./AuthInput";
 function AuthForm() {
   return (
     <>
-      <Card className="min-w-[300px]">
+      <Card className="min-w-[300px] justify-center">
         <CardHeader>
           <CardTitle>Sign {"In"}</CardTitle>
         </CardHeader>

@@ -1,10 +1,10 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { LuPlus } from "react-icons/lu";
+import { RiUserShared2Line } from "react-icons/ri";
 
 import { useRouter } from "next/navigation";
-
-import { LuPlus } from "react-icons/lu";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -17,9 +17,8 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-
-import usePlans from "@/hooks/usePlans";
 import { useJourney } from "@/hooks/useJourney";
+import usePlans from "@/hooks/usePlans";
 
 export default function ShareButton() {
   const [modalOpen, setModalOpen] = useState(false);
@@ -30,7 +29,6 @@ export default function ShareButton() {
   const shareEmailRef = useRef<HTMLInputElement>(null);
 
   const handleSave = async () => {
-
     const shareEmail = shareEmailRef.current?.value;
     if (!shareEmail) {
       alert("Please enter an shareEmail!");
@@ -39,7 +37,7 @@ export default function ShareButton() {
 
     try {
       const ret = await sharePlan(currentPlan.planId, shareEmail);
-      console.log("ret:", ret)
+      console.log("ret:", ret);
 
       if (!ret.ok) {
         const body = await ret.json();
@@ -59,7 +57,7 @@ export default function ShareButton() {
 
       setModalOpen(false);
 
-      router.push(`/plan/${currentPlan.planId}`)
+      router.push(`/plan/${currentPlan.planId}`);
     } catch (e) {
       console.error(e);
       alert(e);
@@ -73,23 +71,17 @@ export default function ShareButton() {
         setModalOpen(false);
       }}
     >
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className=" sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Share this plan</DialogTitle>
-          <DialogDescription>
-            share it with your friends!
-          </DialogDescription>
+          <DialogDescription>share it with your friends!</DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-2">
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="username" className="text-right">
               email
             </Label>
-            <Input
-              ref={shareEmailRef}
-              placeholder=""
-              className="w-fit"
-            />
+            <Input ref={shareEmailRef} placeholder="" className="w-fit" />
           </div>
         </div>
         <DialogFooter>
@@ -110,8 +102,7 @@ export default function ShareButton() {
             }}
           >
             <div className="grid h-[20px] w-[20px] place-items-center">
-              {/* <LuPlus size={26} strokeWidth={2} /> */}
-              share!!!
+              <RiUserShared2Line className="h-6 w-6" />
             </div>
           </div>
         </button>

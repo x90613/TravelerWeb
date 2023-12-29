@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { LuPinOff, LuMegaphone } from "react-icons/lu";
+import { BsCalendar2Plus } from "react-icons/bs";
 
 import { useSession } from "next-auth/react";
 
@@ -10,10 +10,9 @@ import { motion } from "framer-motion";
 import AddJourneyButton from "@/components/AddJourneyButton";
 import EditPlanButton from "@/components/EditPlanButton";
 import JourneysViewer from "@/components/JourneysViewer";
+import ShareButton from "@/components/ShareButton";
 import { useJourney } from "@/hooks/useJourney";
 import usePlans from "@/hooks/usePlans";
-import ShareButton from "@/components/ShareButton";
-
 
 export default function ContentBar() {
   const { data: session } = useSession();
@@ -56,8 +55,7 @@ export default function ContentBar() {
 
           <AddJourneyButton />
 
-          <ShareButton/>
-
+          <ShareButton />
 
           <motion.div
             className="h-ull flex w-full flex-col  shadow-lg "
@@ -65,13 +63,15 @@ export default function ContentBar() {
             whileHover="hover"
           >
             <button
-              className="rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
+              className="rounded bg-yellow-200 px-4 py-2 font-bold text-black hover:bg-yellow-300"
               onClick={() => {
                 exportJourney();
+                alert("Exported!");
               }}
             >
               {" "}
-              export Calendar
+              <BsCalendar2Plus className="mr-2 inline-block" size={20} />
+              Export Calendar
             </button>
           </motion.div>
         </div>

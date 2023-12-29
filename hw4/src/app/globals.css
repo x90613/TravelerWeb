@@ -76,30 +76,16 @@
 }
 
 .content-bar {
-  background-color: #fef3c7;
+  background-color: #fef5d5f3;
 }
 
 .plan-bar {
 
-  background-color: #f0e7c4f3;
+  background-color: #fbf5dff3;
 }
 
-
-/* .icon-bar {
-  animation: spin 2s linear infinite;
-}
-
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-} */
-
-.Travel-icon{
-  animation: travel 4s linear infinite;
+.Travel-icon {
+  animation: travel 2s linear infinite;
 }
 
 @keyframes travel {
@@ -107,14 +93,17 @@
     transform: translate(0, 0);
   }
   25% {
-    transform: translate(0,-5px); 
+    transform: translate(0, -2.5px); /* 向左上移动 */
   }
   50% {
-    transform: translate(0px, 0px);  /* 向右上移动 */
+    transform: translate(0, 0px);  /* 向右上移动 */
   }
   75% {
-    transform: translate(0px, 5px);  /* 向左下移动 */
+    transform: translate(0, 2.5px);  /* 向左下移动 */
   }
+}
 
 
+.Icon{
+  color: #ea4141c4;
 }
