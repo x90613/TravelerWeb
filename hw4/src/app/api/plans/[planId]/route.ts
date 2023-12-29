@@ -20,46 +20,34 @@ export async function DELETE(
     };
   },
 ) {
-  // const dummyFun = (x) => {
-  //   return x;
-  // }
 
-  // dummyFun(req);
 
   try {
     const session = await auth();
     if (!session || !session?.user?.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-    const userId = session.user.id;
+    // const userId = session.user.id;
 
-    // const [plan] = await db
-    //   .select({
-    //     chatId: chatsTable.displayId,
-    //     userId1: chatsTable.userId1,
-    //     userId2: chatsTable.userId2,
-    //   })
-    //   .from(chatsTable)
-    //   .where(and(eq(chatsTable.displayId, params.chatId)))
-    //   .execute();
 
-    // if (!chatroom) {
-    //   return NextResponse.json(
-    //     { error: "Chatroom not found" },
-    //     { status: 404 },
-    //   );
-    // }
-
-    // if (chatroom.userId1 !== userId && chatroom.userId2 !== userId) {
-    //   return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    // }
+    const userIds = await db.query.usersToPlansTable.findMany({
+      where: eq(usersToPlansTable.planId, params.planId),
+      with: {
+        user: {
+          columns: {
+            displayId: true,
+          },
+        },
+      },
+    });
+    console.log("userId",userIds)
 
     await db
       .delete(plansTable)
       .where(eq(plansTable.displayId, params.planId))
       .execute();
 
-    // make sure the chatroom is deleted
+    // make sure the plan is deleted
     const [deletedPlan] = await db
       .select({
         planId: plansTable.displayId,
@@ -72,25 +60,26 @@ export async function DELETE(
       return NextResponse.json({ error: "Plan not deleted" }, { status: 500 });
     }
 
-    // let otherUserId;
-    // if (chatroom.userId1 === userId) {
-    //   otherUserId = chatroom.userId2;
-    // } else {
-    //   otherUserId = chatroom.userId1;
-    // }
 
-    // // pusher socket
-    // const pusher = new Pusher({
-    //   appId: privateEnv.PUSHER_ID,
-    //   key: publicEnv.NEXT_PUBLIC_PUSHER_KEY,
-    //   secret: privateEnv.PUSHER_SECRET,
-    //   cluster: publicEnv.NEXT_PUBLIC_PUSHER_CLUSTER,
-    //   useTLS: true,
-    // });
+    // pusher socket
+    const pusher = new Pusher({
+      appId: privateEnv.PUSHER_ID,
+      key: publicEnv.NEXT_PUBLIC_PUSHER_KEY,
+      secret: privateEnv.PUSHER_SECRET,
+      cluster: publicEnv.NEXT_PUBLIC_PUSHER_CLUSTER,
+      useTLS: true,
+    });
 
-    // await pusher.trigger(`private-${otherUserId}`, "chatrooms:update", {
-    //   senderId: userId,
-    // });
+    async function triggerUpdateForUsers(userIds: any) {
+      for (const item of userIds) {
+        await pusher.trigger(`private-${item.userId}`, "plans:update", {
+          senderId: item.userId,
+        });
+        console.log(`successful del Update! ${item.userId}`)
+      }
+    }
+    console.log(userIds)
+    triggerUpdateForUsers(userIds)
 
     // return
     return NextResponse.json(
@@ -155,17 +144,25 @@ export async function PUT(
     }
 
     // pusher
-    // const pusher = new Pusher({
-    //   appId: privateEnv.PUSHER_ID,
-    //   key: publicEnv.NEXT_PUBLIC_PUSHER_KEY,
-    //   secret: privateEnv.PUSHER_SECRET,
-    //   cluster: publicEnv.NEXT_PUBLIC_PUSHER_CLUSTER,
-    //   useTLS: true,
-    // });
+    const pusher = new Pusher({
+      appId: privateEnv.PUSHER_ID,
+      key: publicEnv.NEXT_PUBLIC_PUSHER_KEY,
+      secret: privateEnv.PUSHER_SECRET,
+      cluster: publicEnv.NEXT_PUBLIC_PUSHER_CLUSTER,
+      useTLS: true,
+    });
 
-    // await pusher.trigger(`private-${otherUserId}`, "chatrooms:update", {
-    //   senderId: userId,
-    // });
+    const [targetUserId] = await db
+      .select({
+        displayId: usersTable.displayId,
+      })
+      .from(usersTable)
+      .where(eq(usersTable.email, email));
+
+
+    await pusher.trigger(`private-${targetUserId.displayId}`, "plans:update", {
+      senderId: userId,
+    });
 
     return NextResponse.json(
       {
