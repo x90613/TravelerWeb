@@ -89,32 +89,46 @@ export async function POST(req: NextRequest) {
 
 
     // handler to add an event
-    const addEvent = async (token: string|null, eventDetails: object, calendarId: string) => {
+    const addEvent = async (token: string|null, title:string, start:string, end: string, location: string, note:string, calendarId: string) => {
   // Ensure token and calendarId are provided
   if (!token ) {
     throw new Error("Token is required");
   }
+  // const eventData = {
+  //   summary: "washi o lan", // summary = title
+  //   start: {
+  //     dateTime: "2023-12-29T15:00:00", // Start time in RFC3339 format
+  //     timeZone: "Asia/Taipei", // Sets the current time zone
+  //   },
+  //   end: {
+  //     dateTime: "2023-12-29T19:00:00",
+  //     timeZone: "Asia/Taipei", // Sets the current time zone
+  //   },
+  //   location: "Taipei",
+  //   description: "I wanna pass Web programming", // note = description
+  // };
+  // a function to add an event to Google Calendar
   const eventData = {
-    summary: "washi o lan", // summary = title
+    summary: title, // summary = title
     start: {
-      dateTime: "2023-12-29T15:00:00", // Start time in RFC3339 format
+      dateTime: `${start}`, // Start time in RFC3339 format
       timeZone: "Asia/Taipei", // Sets the current time zone
     },
     end: {
-      dateTime: "2023-12-29T19:00:00",
+      dateTime: `${end}`,
       timeZone: "Asia/Taipei", // Sets the current time zone
     },
-    location: "Taipei",
-    description: "I wanna pass Web programming", // note = description
+    location: location,
+    description: note, // note = description
   };
-  // a function to add an event to Google Calendar
+
   const response = await fetch(`https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(eventDetails), // Make sure eventDetails are passed to the function
+    body: JSON.stringify(eventData), // Make sure eventDetails are passed to the function
   });
 
     // Check for response status
@@ -126,23 +140,23 @@ export async function POST(req: NextRequest) {
     return data;
       };
 
-    const eventData = {
-      summary: "washi o lan", // summary = title
-      start: {
-        dateTime: "2023-12-29T15:00:00", // Start time in RFC3339 format
-        timeZone: "Asia/Taipei", // Sets the current time zone
-      },
-      end: {
-        dateTime: "2023-12-29T19:00:00",
-        timeZone: "Asia/Taipei", // Sets the current time zone
-      },
-      location: "Taipei",
-      description: "I wanna pass Web programming", // note = description
-    };
+    // const eventData = {
+    //   summary: "washi o lan", // summary = title
+    //   start: {
+    //     dateTime: "2023-12-29T15:00:00", // Start time in RFC3339 format
+    //     timeZone: "Asia/Taipei", // Sets the current time zone
+    //   },
+    //   end: {
+    //     dateTime: "2023-12-29T19:00:00",
+    //     timeZone: "Asia/Taipei", // Sets the current time zone
+    //   },
+    //   location: "Taipei",
+    //   description: "I wanna pass Web programming", // note = description
+    // };
 
     
     const CalendarId = await addCalendar(token, plan.name, plan.description);
-    addEvent(token, eventData, CalendarId);
+    addEvent(token, journeys[0].title, journeys[0].start, journeys[0].end, journeys[0].location, journeys[0].note, CalendarId);
     console.log("export complete")
 
     return NextResponse.json(
