@@ -119,6 +119,7 @@ export function PlansProvider({ children }: { children: React.ReactNode }) {
     return data;
   };
 
+
   const sharePlan = async(planId:string, email: string) => {
     const res = await fetch(`/api/plans/${planId}`, {
       method: "PUT",
