@@ -4,6 +4,7 @@ import { LuPin, LuTrash2 } from "react-icons/lu";
 import { useSession } from "next-auth/react";
 
 import { Loader } from "@googlemaps/js-api-loader";
+import { motion } from "framer-motion";
 
 import {
   Dialog,
@@ -226,58 +227,67 @@ function JourneyItem({
 
   return (
     <>
-      <button
-        onClick={() => {
-          setModalOpen(true);
-        }}
-        className="flex w-1/2 pt-1"
+      <motion.div
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 1.05 }}
+        drag="x"
+        dragConstraints={{ left: -100, right: 100 }}
       >
-        <div key={"dm1"} className="w-full pt-1">
-          <div className={`flex flex-row items-end gap-2`}>
-            <button className="relative m-4 w-full rounded-lg border-2 p-4">
-              <div className="flex items-start justify-between">
-                <div className="flex">
-                  <div className="m-1 p-1 font-bold">Title</div>
-                  <div className="m-1 rounded-lg border p-1">
-                    {journey.title}
+        <button
+          onClick={() => {
+            setModalOpen(true);
+          }}
+          className="flex w-1/2 pt-1"
+        >
+          <div key={"dm1"} className="w-full pt-1">
+            <div className={`flex flex-row items-end gap-2`}>
+              <button className="relative m-4 w-full rounded-lg border-2 p-4">
+                <div className="flex items-start justify-between">
+                  <div className="flex">
+                    <div className="m-1 p-1 font-bold">Title</div>
+                    <div className="m-1 rounded-lg border p-1">
+                      {journey.title}
+                    </div>
                   </div>
-                </div>
-                {/* <button
+                  {/* <button
                   onClick={handleDelete}
                   className="text-white bg-red-500 hover:bg-red-700 rounded-full w-6 h-6 flex items-center justify-center"
                 >
                   X
                 </button> */}
-              </div>
-              <div className="justify-even flex w-full">
-                <div className="flex">
-                  <div className="m-1 p-1 font-bold">Start</div>
-                  <div className="m-1 rounded-lg border p-1">
-                    {journey.start}
+                </div>
+                <div className="justify-even flex w-full">
+                  <div className="flex">
+                    <div className="m-1 p-1 font-bold">Start</div>
+                    <div className="m-1 rounded-lg border p-1">
+                      {journey.start}
+                    </div>
+                  </div>
+                  <div className="flex">
+                    <div className="m-1 p-1 font-bold">⁀➴ End</div>
+                    <div className="m-1 rounded-lg border p-1">
+                      {journey.end}
+                    </div>
                   </div>
                 </div>
                 <div className="flex">
-                  <div className="m-1 p-1 font-bold">⁀➴ End</div>
-                  <div className="m-1 rounded-lg border p-1">{journey.end}</div>
+                  <div className="m-1 p-1 font-bold">Location</div>
+                  <div className="m-1 rounded-lg border p-1">
+                    {journey.location}
+                  </div>
                 </div>
-              </div>
-              <div className="flex">
-                <div className="m-1 p-1 font-bold">Location</div>
-                <div className="m-1 rounded-lg border p-1">
-                  {journey.location}
+                <div className="flex">
+                  <div className="m-1 p-1 font-bold">Note</div>
+                  <div className="m-1 break-words rounded-lg border p-1">
+                    {journey.note}
+                  </div>
                 </div>
-              </div>
-              <div className="flex">
-                <div className="m-1 p-1 font-bold">Note</div>
-                <div className="m-1 break-words rounded-lg border p-1">
-                  {journey.note}
-                </div>
-              </div>
-            </button>
+              </button>
+            </div>
+            {modalOpen && dialog}
           </div>
-          {modalOpen && dialog}
-        </div>
-      </button>
+        </button>
+      </motion.div>
     </>
   );
 }

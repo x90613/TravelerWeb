@@ -74,3 +74,15 @@
     @apply bg-background text-foreground;
   }
 }
+
+
+
+.signOutText {
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.signOutText:hover {
+  color: #007bff; 
+  text-decoration: underline;
+}
