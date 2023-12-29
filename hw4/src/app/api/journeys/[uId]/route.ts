@@ -78,6 +78,7 @@ export async function DELETE(
   try {
     const journeyId = params.uId;
     const session = await auth();
+    const { planId } = await req.json();
     if (!session || !session?.user?.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
@@ -89,18 +90,18 @@ export async function DELETE(
       .where(eq(journeysTable.displayId, journeyId));
 
     // pusher socket
-    // TODO
-    // const pusher = new Pusher({
-    //   appId: privateEnv.PUSHER_ID,
-    //   key: publicEnv.NEXT_PUBLIC_PUSHER_KEY,
-    //   secret: privateEnv.PUSHER_SECRET,
-    //   cluster: publicEnv.NEXT_PUBLIC_PUSHER_CLUSTER,
-    //   useTLS: true,
-    // });
+    // pusher
+    const pusher = new Pusher({
+      appId: privateEnv.PUSHER_ID,
+      key: publicEnv.NEXT_PUBLIC_PUSHER_KEY,
+      secret: privateEnv.PUSHER_SECRET,
+      cluster: publicEnv.NEXT_PUBLIC_PUSHER_CLUSTER,
+      useTLS: true,
+    });
 
-    // await pusher.trigger(`private-${otherUserId}`, "chat:update", {
-    //   senderId: userId,
-    // });
+    await pusher.trigger(`private-${planId}`, "journey:update", {
+      senderId: userId,
+    });
 
     return NextResponse.json({ journey: "journey deleted" }, { status: 200 });
   } catch (error) {

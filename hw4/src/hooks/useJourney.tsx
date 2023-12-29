@@ -60,8 +60,8 @@ export function JourneyProvider({ children }: { children: React.ReactNode }) {
       const error_data = await ret.json();
       console.log(error_data.error);
 
-      // // redirect to home page
-      // router.push("/chat");
+      // redirect to home page
+      router.push("/plan");
       return;
     }
     const data = await ret.json();
@@ -74,38 +74,66 @@ export function JourneyProvider({ children }: { children: React.ReactNode }) {
   }, [planId, fetchJourneys]);
 
 
-  // pusher
+  // pusher for listening share events
   useEffect(() => {
-    const listen = async () => {
-      if(!userId) return; 
-      
-      const channelName = `private-${userId}`
+    if(!userId) return; 
+    
+    const channelName = `private-${userId}`
+    try {
+      const channel = pusherClient.subscribe(channelName);
+      channel.bind("plans:update", async({ senderId }: PusherPayload) => {
+        if(senderId === userId){// don't update events that are trigged by myself
+          return;
+        }
+        await fetchPlans();
+      });
+      // channel.bind("journey:update", async({ senderId }: PusherPayload) => {
+      //   if(senderId === userId){
+      //     return;
+      //   }
+      //   await fetchPlans();
+      //   await fetchJourneys();
+      // });
+    } catch (error) {
+      console.log(error);
+    }
 
-      try {
-        const channel = pusherClient.subscribe(channelName);
-        channel.bind("plans:update", async({ senderId }: PusherPayload) => {
-          if(senderId === userId){// don't update events that are trigged by myself
-            return;
-          }
-          await fetchPlans();
-        });
-        // channel.bind("journey:update", async({ senderId }: PusherPayload) => {
-        //   if(senderId === userId){
-        //     return;
-        //   }
-        //   await fetchPlans();
-        //   await fetchJourneys();
-        // });
-      } catch (error) {
-        console.log(error);
-      }
-
-      return() => {
-        pusherClient.unsubscribe(channelName);
-      };
+    return() => {
+      pusherClient.unsubscribe(channelName);
     };
-    listen();
   },[userId, fetchPlans, fetchJourneys])
+
+  
+  // pusher for listening update events
+  useEffect(() => {
+    if(!userId) return; 
+    
+    const channelName2 = `private-${planId}`
+
+    try {
+      const channel = pusherClient.subscribe(channelName2);
+      // channel.bind("plans:update", async({ senderId }: PusherPayload) => {
+      //   if(senderId === userId){// don't update events that are trigged by myself
+      //     return;
+      //   }
+      //   await fetchPlans();
+      // });
+      channel.bind("journey:update", async({ senderId }: PusherPayload) => {
+        if(senderId === userId){
+          return;
+        }
+        await fetchPlans();
+        await fetchJourneys();
+      });
+    } catch (error) {
+      console.log(error);
+    }
+
+    return() => {
+      pusherClient.unsubscribe(channelName2);
+    };
+  },[userId, planId, fetchPlans, fetchJourneys])
+
 
 
   const addJourney = async (
@@ -145,6 +173,9 @@ export function JourneyProvider({ children }: { children: React.ReactNode }) {
       headers: {
         "Content-Type": "application/json",
       },
+      body: JSON.stringify({
+        planId: planId,
+      }),
     });
     if (!res.ok) {
       return res;
@@ -169,6 +200,7 @@ export function JourneyProvider({ children }: { children: React.ReactNode }) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
+        planId: planId,
         journeyId: journeyId,
         title: title,
         start: start,
