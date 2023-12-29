@@ -1,10 +1,9 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { LuPlus } from "react-icons/lu";
 
 import { useRouter } from "next/navigation";
-
-import { LuPlus } from "react-icons/lu";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -17,8 +16,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-
-import {useJourney} from "@/hooks/useJourney";
+import { useJourney } from "@/hooks/useJourney";
 
 export default function AddJourneyButton() {
   const [modalOpen, setModalOpen] = useState(false);
@@ -32,7 +30,6 @@ export default function AddJourneyButton() {
   const noteRef = useRef<HTMLInputElement>(null);
 
   const handleSave = async () => {
-
     const title = titleRef.current?.value;
     if (!title) {
       alert("Please enter an title!");
@@ -95,8 +92,8 @@ export default function AddJourneyButton() {
         <DialogHeader>
           <DialogTitle>Add a new journey</DialogTitle>
           <DialogDescription>
-            Create a new journey!
-            Please enter the following form to create a journey.
+            Create a new journey! Please enter the following form to create a
+            journey.
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-2">
@@ -104,11 +101,7 @@ export default function AddJourneyButton() {
             <Label htmlFor="username" className="text-right">
               title
             </Label>
-            <Input
-              ref={titleRef}
-              placeholder=""
-              className="w-fit"
-            />
+            <Input ref={titleRef} placeholder="" className="w-fit" />
           </div>
         </div>
         <div className="grid gap-4 py-2">
@@ -117,6 +110,7 @@ export default function AddJourneyButton() {
               start
             </Label>
             <Input
+              type="datetime-local"
               ref={startRef}
               placeholder=""
               className="w-fit"
@@ -129,6 +123,7 @@ export default function AddJourneyButton() {
               end
             </Label>
             <Input
+              type="datetime-local"
               ref={endRef}
               placeholder=""
               className="w-fit"
@@ -140,11 +135,7 @@ export default function AddJourneyButton() {
             <Label htmlFor="username" className="text-right">
               location
             </Label>
-            <Input
-              ref={locationRef}
-              placeholder=""
-              className="w-fit"
-            />
+            <Input ref={locationRef} placeholder="" className="w-fit" />
           </div>
         </div>
         <div className="grid gap-4 py-2">
@@ -152,11 +143,7 @@ export default function AddJourneyButton() {
             <Label htmlFor="username" className="text-right">
               note
             </Label>
-            <Input
-              ref={noteRef}
-              placeholder=""
-              className="w-fit"
-            />
+            <Input ref={noteRef} placeholder="" className="w-fit" />
           </div>
         </div>
         <DialogFooter>

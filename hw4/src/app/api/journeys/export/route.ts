@@ -98,11 +98,11 @@ export async function POST(req: NextRequest) {
   const eventData = {
     summary: title, // summary = title
     start: {
-      dateTime: `${start}`, // Start time in RFC3339 format
+      dateTime: `${start}:00`, // Start time in RFC3339 format
       timeZone: "Asia/Taipei", // Sets the current time zone
     },
     end: {
-      dateTime: `${end}`,
+      dateTime: `${end}:00`,
       timeZone: "Asia/Taipei", // Sets the current time zone
     },
     location: location,
