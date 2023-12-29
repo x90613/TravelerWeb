@@ -1,16 +1,13 @@
 import { relations } from "drizzle-orm";
 import {
-  index,
-  // text,
+  index, // text,
   pgTable,
   serial,
   uuid,
-  varchar,
-  // boolean,
+  varchar, // boolean,
   // timestamp,
   unique,
 } from "drizzle-orm/pg-core";
-
 
 export const usersTable = pgTable(
   "users",
@@ -23,7 +20,7 @@ export const usersTable = pgTable(
     token: varchar("access_token"),
     provider: varchar("provider", {
       length: 100,
-      enum: ["github", "credentials","google"],
+      enum: ["github", "credentials", "google"],
     })
       .notNull()
       .default("credentials"),
@@ -37,7 +34,6 @@ export const usersTable = pgTable(
 export const usersRelations = relations(usersTable, ({ many }) => ({
   plansUsersTable: many(usersToPlansTable),
 }));
-
 
 // Plans (e.g., PlanA, PlanB)
 // usersTable is many-to-many relationship with Plans
@@ -58,7 +54,7 @@ export const plansRelations = relations(plansTable, ({ many }) => ({
   plansUsersTable: many(usersToPlansTable),
 }));
 
-// ManyToMany需要建表維護  
+// ManyToMany需要建表維護
 export const usersToPlansTable = pgTable(
   "users_to_plans",
   {
@@ -102,10 +98,6 @@ export const plansToUsersRelations = relations(
   }),
 );
 
-
-
-
-
 export const journeysTable = pgTable(
   "journeys",
   {
@@ -116,7 +108,7 @@ export const journeysTable = pgTable(
     end: varchar("end").notNull(),
     location: varchar("location").notNull(),
     note: varchar("note", { length: 100 }).notNull(),
-    plansId: uuid("plans_id") // 外來鍵(如果plan刪掉，journey也要一併刪除)
+    plansId: uuid("plans_id"), // 外來鍵(如果plan刪掉，journey也要一併刪除)
   },
   (table) => ({
     displayIdIndex: index("display_id_index").on(table.displayId),

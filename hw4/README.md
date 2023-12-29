@@ -2,7 +2,7 @@
 
 ## Run the project
 
-***Modified from Notion Clone***
+**_Modified from Notion Clone_**
 
 1. Install dependencies
    ```bash

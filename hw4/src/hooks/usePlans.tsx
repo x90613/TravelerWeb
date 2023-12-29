@@ -93,7 +93,11 @@ export function PlansProvider({ children }: { children: React.ReactNode }) {
     return data;
   };
 
-  const updatePlan = async (planId:string, planName: string, planDescription: string) => {
+  const updatePlan = async (
+    planId: string,
+    planName: string,
+    planDescription: string,
+  ) => {
     const res = await fetch(`/api/plans`, {
       method: "PUT",
       headers: {
@@ -114,7 +118,6 @@ export function PlansProvider({ children }: { children: React.ReactNode }) {
     return data;
   };
 
-  
   // const exportPlan = async();
 
   return (

@@ -69,10 +69,7 @@ export async function DELETE(
       .execute();
 
     if (deletedPlan) {
-      return NextResponse.json(
-        { error: "Plan not deleted" },
-        { status: 500 },
-      );
+      return NextResponse.json({ error: "Plan not deleted" }, { status: 500 });
     }
 
     // let otherUserId;

@@ -1,10 +1,9 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { LuPlus } from "react-icons/lu";
 
 import { useRouter } from "next/navigation";
-
-import { LuPlus } from "react-icons/lu";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -17,7 +16,6 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-
 import usePlans from "@/hooks/usePlans";
 
 export default function AddPlanButton() {
@@ -29,7 +27,6 @@ export default function AddPlanButton() {
   const planDescriptionRef = useRef<HTMLInputElement>(null);
 
   const handleSave = async () => {
-
     const planName = planNameRef.current?.value;
     if (!planName) {
       alert("Please enter an planName!");
@@ -56,7 +53,7 @@ export default function AddPlanButton() {
 
       setModalOpen(false);
 
-      router.push(`/plan/${planId}`)
+      router.push(`/plan/${planId}`);
     } catch (e) {
       console.error(e);
       alert(e);
@@ -74,8 +71,7 @@ export default function AddPlanButton() {
         <DialogHeader>
           <DialogTitle>Add a new plan</DialogTitle>
           <DialogDescription>
-            Create a new plan!
-            Please enter the plan name & the description.
+            Create a new plan! Please enter the plan name & the description.
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-2">
@@ -83,11 +79,7 @@ export default function AddPlanButton() {
             <Label htmlFor="username" className="text-right">
               name
             </Label>
-            <Input
-              ref={planNameRef}
-              placeholder=""
-              className="w-fit"
-            />
+            <Input ref={planNameRef} placeholder="" className="w-fit" />
           </div>
         </div>
         <div className="grid gap-4 py-2">
@@ -95,11 +87,7 @@ export default function AddPlanButton() {
             <Label htmlFor="username" className="text-right">
               description
             </Label>
-            <Input
-              ref={planDescriptionRef}
-              placeholder=""
-              className="w-fit"
-            />
+            <Input ref={planDescriptionRef} placeholder="" className="w-fit" />
           </div>
         </div>
         <DialogFooter>
