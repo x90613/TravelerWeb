@@ -24,8 +24,8 @@ export default async function RedirectPage() {
     try {
       const plans = await db.query.usersToPlansTable.findMany({
         where: eq(usersToPlansTable.userId, userId),
-        with: { 
-          plan: { 
+        with: {
+          plan: {
             columns: {
               displayId: true,
               name: true,
@@ -39,9 +39,9 @@ export default async function RedirectPage() {
       // const firstChatroomId = chatrooms[0].id;
       // const firstPlan = plans.id;
 
-      redirect(`/plan/${plans}`)
+      redirect(`/plan/${plans}`);
     } catch (e) {
-      redirect(`/plan`)
+      redirect(`/plan`);
     }
   };
 

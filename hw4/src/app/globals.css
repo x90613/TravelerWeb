@@ -74,3 +74,11 @@
     @apply bg-background text-foreground;
   }
 }
+
+.content-bar {
+  background-color: #fef3c7;
+}
+
+.plan-bar {
+  background-color: #fde68a;
+}

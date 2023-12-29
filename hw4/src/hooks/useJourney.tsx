@@ -72,57 +72,6 @@ export function JourneyProvider({ children }: { children: React.ReactNode }) {
     fetchJourneys();
   }, [planId, fetchJourneys]);
 
-  // pusher段落
-  // useEffect(() => {
-  //   const callbackFun = async () => {
-  //     if (!userId) return;
-  //     const channelName = `private-${userId}`;
-  //     try {
-  //       const channel = pusherClient.subscribe(channelName);
-  //       channel.bind("chatrooms:update", async ({ senderId }: PusherPayload) => {
-  //         if (senderId === userId) {
-  //           return;
-  //         }
-  //         await fetchChatrooms();
-  //       });
-  //       channel.bind("chat:update", async ({ senderId }: PusherPayload) => {
-  //         if (senderId === userId) {
-  //           return;
-  //         }
-  //         await fetchMessages();
-  //         await fetchChatrooms();
-  //       });
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-
-  //     return () => {
-  //       pusherClient.unsubscribe(channelName);
-  //     };
-  //   };
-  //   callbackFun();
-  // }, [userId, fetchChatrooms, fetchMessages]);
-
-  // useEffect(()=>{
-  //   if (chatId) {
-  //     const chatroom = chatrooms.find(
-  //       (chatroom) => chatroom.id === chatId,
-  //     );
-  //     if (!chatroom) {
-  //       router.push("/chat");
-  //     }
-  //   }
-  //   else{
-  //     // check if is at /chat
-  //     if (pathname === "/chat" && chatrooms.length > 0) {
-  //       // get first chatroom
-  //       const chatroom = chatrooms[0];
-  //       // redirect to first chatroom
-  //       router.push(`/chat/${chatroom.id}`);
-  //     }
-  //   }
-  // }, [chatrooms, router, pathname, chatId])
-
   const addJourney = async (
     title: string,
     start: string,
@@ -202,7 +151,7 @@ export function JourneyProvider({ children }: { children: React.ReactNode }) {
   };
 
   // exportJourney
-  const exportJourney = async (planId: string) => {
+  const exportJourney = async () => {
     const res = await fetch("/api/journeys/export", {
       method: "POST",
       headers: {

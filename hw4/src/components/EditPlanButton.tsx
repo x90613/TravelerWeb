@@ -1,11 +1,10 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { FcMenu } from "react-icons/fc";
+import { LuPlus } from "react-icons/lu";
 
 import { useRouter } from "next/navigation";
-
-import { LuPlus } from "react-icons/lu";
-import { FcMenu } from "react-icons/fc";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -18,9 +17,8 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-
-import usePlans from "@/hooks/usePlans";
 import { useJourney } from "@/hooks/useJourney";
+import usePlans from "@/hooks/usePlans";
 
 export default function EditPlanButton() {
   const [modalOpen, setModalOpen] = useState(false);
@@ -28,14 +26,13 @@ export default function EditPlanButton() {
   const { updatePlan } = usePlans();
   const { currentPlan } = useJourney();
 
-  const currentPlanName = currentPlan?.plan.name // 沒有時，留白
-  const currentPlanDescription = currentPlan?.plan.description // 沒有時，留白
-  
+  const currentPlanName = currentPlan?.plan.name; // 沒有時，留白
+  const currentPlanDescription = currentPlan?.plan.description; // 沒有時，留白
+
   const planNameRef = useRef<HTMLInputElement>(null);
   const planDescriptionRef = useRef<HTMLInputElement>(null);
 
   const handleUpdate = async () => {
-
     const planName = planNameRef.current?.value;
     if (!planName) {
       alert("Please enter an planName!");
@@ -49,7 +46,11 @@ export default function EditPlanButton() {
     }
 
     try {
-      const ret = await updatePlan(currentPlan.planId, planName, planDescription);
+      const ret = await updatePlan(
+        currentPlan.planId,
+        planName,
+        planDescription,
+      );
 
       if (!ret.plan && !ret.ok) {
         const body = await ret.json();
@@ -78,8 +79,7 @@ export default function EditPlanButton() {
         <DialogHeader>
           <DialogTitle>Edit the plan</DialogTitle>
           <DialogDescription>
-            Edit a new plan!
-            Please enter the plan name & the description.
+            Edit a new plan! Please enter the plan name & the description.
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-2">

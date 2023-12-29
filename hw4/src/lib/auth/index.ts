@@ -1,35 +1,38 @@
 import NextAuth from "next-auth";
 import GitHub from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
+
 import { eq } from "drizzle-orm";
+import { access } from "fs";
 
 import { db } from "@/db";
 import { usersTable } from "@/db/schema";
 
 import CredentialsProvider from "./CredentialsProvider";
-import { access } from "fs";
 
 export const {
   handlers: { GET, POST },
   auth,
 } = NextAuth({
-  providers: [ 
+  providers: [
     GoogleProvider({
-    clientId: process.env.GOOGLE_CLIENT_ID,
-    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    authorization: {
-      params: {
-        scope: "https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/calendar.app.created https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/calendar.calendars.readonly https://www.googleapis.com/auth/calendar.events.owned",
-        // Add other scopes as needed
-        prompt: "consent",
-        access_type: "offline",
-        response_type: "code"
-        
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      authorization: {
+        params: {
+          scope:
+            "https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/calendar.app.created https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/calendar.calendars.readonly https://www.googleapis.com/auth/calendar.events.owned",
+          // Add other scopes as needed
+          prompt: "consent",
+          access_type: "offline",
+          response_type: "code",
+        },
       },
-    },
-  }),GitHub, CredentialsProvider],
+    }),
+    GitHub,
+    CredentialsProvider,
+  ],
   callbacks: {
-
     async jwt({ token, account }) {
       if (!account) return token;
       const { name, email } = token;
@@ -51,13 +54,15 @@ export const {
           .where(eq(usersTable.email, email.toLowerCase()))
           .execute();
         return token;
-      };
+      }
       if (provider !== "google") return token;
 
       // Sign up new user
 
-      if(account){
-        token = Object.assign({}, token, {access_token: account.access_token})
+      if (account) {
+        token = Object.assign({}, token, {
+          access_token: account.access_token,
+        });
       }
       await db.insert(usersTable).values({
         username: name,
@@ -66,11 +71,8 @@ export const {
         token: account.access_token,
       });
 
-    
-      
       return token;
     },
-
 
     async session({ session, token }) {
       const email = token.email || session?.user?.email;
@@ -98,7 +100,6 @@ export const {
         },
       };
     },
-
   },
   pages: {
     signIn: "/",

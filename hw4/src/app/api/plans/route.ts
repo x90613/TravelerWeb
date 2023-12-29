@@ -4,7 +4,12 @@ import { and, eq, or, sql } from "drizzle-orm";
 import Pusher from "pusher";
 
 import { db } from "@/db";
-import { usersTable, journeysTable, usersToPlansTable, plansTable } from "@/db/schema";
+import {
+  usersTable,
+  journeysTable,
+  usersToPlansTable,
+  plansTable,
+} from "@/db/schema";
 import { auth } from "@/lib/auth";
 import { privateEnv } from "@/lib/env/private";
 import { publicEnv } from "@/lib/env/public";
@@ -28,14 +33,14 @@ export async function GET(req: NextRequest) {
     // const tmp = await db.execute(sql`SELECT C.display_id as id, C.user_id1, C.user_id2, C.pinned_message_id, C.latest_message_id, U.username as username1, V.username as username2, null as latest_message_content, null as pinned_message_content, null as latest_message_timestamp, null as latest_message_sender_id, null as pinned_message_sender_id FROM chats as C JOIN users U ON C.user_id1 = U.display_id JOIN users V ON C.user_id2 = V.display_id WHERE (C.user_id1 = ${userId} OR C.user_id2 = ${userId}) AND ()`,)
 
     // const res = await db.execute(
-    //   sql`SELECT C.display_id as id, C.user_id1, C.user_id2, C.pinned_message_id, C.latest_message_id, 
-    //   U.username as username1, V.username as username2, M.content as latest_message_content, 
+    //   sql`SELECT C.display_id as id, C.user_id1, C.user_id2, C.pinned_message_id, C.latest_message_id,
+    //   U.username as username1, V.username as username2, M.content as latest_message_content,
     //   N.content as pinned_message_content, M.timestamp as latest_message_timestamp, M.sender_id as latest_message_sender_id, N.sender_id as pinned_message_sender_id, M.is_visibled as latest_message_isvisible FROM chats as C JOIN users U ON C.user_id1 = U.display_id JOIN users V ON C.user_id2 = V.display_id LEFT JOIN messages M ON C.latest_message_id = M.display_id LEFT JOIN messages N ON C.pinned_message_id = N.display_id WHERE C.user_id1 = ${userId} OR C.user_id2 = ${userId} ORDER BY latest_message_timestamp DESC`,
     // );
     const plans = await db.query.usersToPlansTable.findMany({
       where: eq(usersToPlansTable.userId, userId),
-      with: { 
-        plan: { 
+      with: {
+        plan: {
           columns: {
             displayId: true,
             name: true,
@@ -44,7 +49,7 @@ export async function GET(req: NextRequest) {
         },
       },
     });
-    
+
     // return
     return NextResponse.json(
       {
@@ -89,7 +94,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
     const userId = session.user.id;
-
 
     // create plan
     console.log("[createPlan]");
@@ -149,7 +153,6 @@ export async function PUT(req: NextRequest) {
 
     const { planId, name, description } = await req.json();
 
-
     let ret_plan = await db
       .update(plansTable)
       .set({
@@ -158,7 +161,7 @@ export async function PUT(req: NextRequest) {
       })
       .where(and(eq(plansTable.displayId, planId)))
       .execute();
-      // console.log(ret_journey)
+    // console.log(ret_journey)
     // pusher
     // const pusher = new Pusher({
     //   appId: privateEnv.PUSHER_ID,
@@ -184,4 +187,3 @@ export async function PUT(req: NextRequest) {
     return NextResponse.json({ error: "Error" }, { status: 500 });
   }
 }
-

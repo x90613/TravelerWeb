@@ -19,7 +19,6 @@ export async function GET(
     };
   },
 ) {
-
   try {
     const planId = params.uId;
     const session = await auth();
@@ -76,7 +75,6 @@ export async function DELETE(
     };
   },
 ) {
-
   try {
     const journeyId = params.uId;
     const session = await auth();
