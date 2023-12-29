@@ -1,8 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 
 import { and, eq, or, sql } from "drizzle-orm";
-import Pusher from "pusher";
-
 import { db } from "@/db";
 import {
   usersToPlansTable,

@@ -36,8 +36,8 @@ export function JourneyProvider({ children }: { children: React.ReactNode }) {
   const { data: session } = useSession();
   const userId = session?.user?.id;
   const router = useRouter();
-  const pathname = usePathname();
-  const token = session?.user?.token;
+  // const pathname = usePathname();
+  // const token = session?.user?.token;
   const [journeys, setJourneys] = useState([]);
   const [currentPlan, setCurrentPlan] = useState(null);
 
