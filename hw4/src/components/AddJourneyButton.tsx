@@ -18,6 +18,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useJourney } from "@/hooks/useJourney";
 
+import PlaceAutocomplete from "./PlaceAutocomplete";
+
 export default function AddJourneyButton() {
   const [modalOpen, setModalOpen] = useState(false);
   const router = useRouter();
@@ -28,6 +30,14 @@ export default function AddJourneyButton() {
   const endRef = useRef<HTMLInputElement>(null);
   const locationRef = useRef<HTMLInputElement>(null);
   const noteRef = useRef<HTMLInputElement>(null);
+
+  const handlePlaceSelect = (place) => {
+    // 更新 locationRef 的值
+    if (locationRef.current) {
+      locationRef.current.value = place.formatted_address;
+    }
+    // 这里可以添加更多的处理逻辑，如果需要的话
+  };
 
   const handleSave = async () => {
     const title = titleRef.current?.value;
@@ -135,7 +145,12 @@ export default function AddJourneyButton() {
             <Label htmlFor="username" className="text-right">
               location
             </Label>
-            <Input ref={locationRef} placeholder="" className="w-fit" />
+            <PlaceAutocomplete
+              ref={locationRef}
+              onPlaceSelected={handlePlaceSelect}
+            />
+
+            {/* <Input ref={locationRef} placeholder="" className="w-fit" /> */}
           </div>
         </div>
         <div className="grid gap-4 py-2">
