@@ -12,6 +12,7 @@ import EditPlanButton from "@/components/EditPlanButton";
 import JourneysViewer from "@/components/JourneysViewer";
 import { useJourney } from "@/hooks/useJourney";
 import usePlans from "@/hooks/usePlans";
+import ShareButton from "./ShareButton";
 
 export default function ContentBar() {
   const { data: session } = useSession();
@@ -53,6 +54,7 @@ export default function ContentBar() {
           </motion.div>
 
           <AddJourneyButton />
+          <ShareButton/>
 
           <motion.div
             className="h-ull flex w-full flex-col  shadow-lg "
