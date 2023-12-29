@@ -1,12 +1,12 @@
 "use client";
 
 // import { useEffect, useRef } from "react";
-import { LuLogOut, LuPlus, LuUser } from "react-icons/lu";
+import { BiLogOutCircle } from "react-icons/bi";
+import { FaUserAstronaut } from "react-icons/fa6";
+import { MdOutlineTravelExplore } from "react-icons/md";
 
 import { useSession } from "next-auth/react";
-
 import Image from "next/image";
-
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
@@ -83,17 +83,11 @@ export default function PlansBar() {
     <>
       <div className=" flex flex-col">
         <div className="m-1 flex flex-row items-center justify-between">
-          <motion.img
-            src="/travel3.png"
-            alt="#"
-            className="icon-bar"
-            width={100}
-            height={50}
-          />
-
+          <MdOutlineTravelExplore size={100} className="Icon m-1" />
           {/* a big bold font "Traveler" */}
-          <span className="Travel-icon text-3xl font-bold">Traveler</span>
-
+          <span className="Travel-icon text0 text-7xl font-bold text-gray-800">
+            Traveler
+          </span>
           <motion.div
             className="text-medium m-1 font-semibold"
             variants={signOutVariants}
@@ -103,10 +97,9 @@ export default function PlansBar() {
           </motion.div>
         </div>
 
-        <p className="font-seri w-full p-3 px-4 font-bold">
+        <p className="w-full p-3 px-4 font-mono font-bold">
           The joy of journeying.
         </p>
-
 
         {plans.map((p: any) => (
           <PlanItem
@@ -119,7 +112,7 @@ export default function PlansBar() {
       </div>
       <div className="fixed bottom-5 left-3 p-4">
         <div className="flex flex-row">
-          <LuUser size={20} strokeWidth={3} className="m-1" />
+          <FaUserAstronaut size={20} strokeWidth={3} className="m-1" />
           <span className="text-medium m-1 font-semibold">
             {session?.user?.username}
           </span>
@@ -128,14 +121,14 @@ export default function PlansBar() {
         <div className="gap-4 rounded-full transition-colors duration-300 group-hover:bg-gray-200">
           <Link href={`/auth/signout`}>
             <motion.div
-              className="text-medium m-1 flex flex-row font-semibold"
+              className="text-medium mr-2 flex flex-row font-semibold"
               variants={signOutVariants}
               whileHover="hover"
             >
-              <LuLogOut size={20} strokeWidth={3} className="m-1" />
+              <BiLogOutCircle size={20} strokeWidth={3} className="mr-3" />
 
               <motion.span
-                className="text-medium m-1 font-semibold"
+                className="text-medium mr-4 font-semibold"
                 variants={signOutVariants}
                 whileHover="hover"
               >
