@@ -1,10 +1,10 @@
 import { NextResponse, type NextRequest } from "next/server";
 
-import { ConsoleLogWriter, and, eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import Pusher from "pusher";
 
 import { db } from "@/db";
-import { plansTable, journeysTable } from "@/db/schema";
+import { journeysTable } from "@/db/schema";
 import { auth } from "@/lib/auth";
 import { privateEnv } from "@/lib/env/private";
 import { publicEnv } from "@/lib/env/public";
@@ -80,8 +80,7 @@ export async function PUT(req: NextRequest) {
       })
       .where(and(eq(journeysTable.displayId, journeyId)))
       .execute();
-    
-    
+
     // pusher
     const pusher = new Pusher({
       appId: privateEnv.PUSHER_ID,
@@ -91,11 +90,10 @@ export async function PUT(req: NextRequest) {
       useTLS: true,
     });
 
-    await pusher.trigger(`private-${planId}`, "chat:update", {
+    await pusher.trigger(`private-${planId}`, "journey:update", {
       senderId: userId,
     });
 
-    // return
     return NextResponse.json(
       {
         journey: ret_journey,
