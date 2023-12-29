@@ -5,8 +5,6 @@ import Pusher from "pusher";
 
 import { db } from "@/db";
 import {
-  usersTable,
-  journeysTable,
   usersToPlansTable,
   plansTable,
 } from "@/db/schema";
@@ -18,25 +16,12 @@ import { publicEnv } from "@/lib/env/public";
 // To get All plans
 export async function GET(req: NextRequest) {
   try {
-    // const dummyFun = (x) => {
-    //   return x;
-    // }
-
-    // dummyFun(req);
-
     const session = await auth();
     if (!session || !session?.user?.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
     const userId = session.user.id;
 
-    // const tmp = await db.execute(sql`SELECT C.display_id as id, C.user_id1, C.user_id2, C.pinned_message_id, C.latest_message_id, U.username as username1, V.username as username2, null as latest_message_content, null as pinned_message_content, null as latest_message_timestamp, null as latest_message_sender_id, null as pinned_message_sender_id FROM chats as C JOIN users U ON C.user_id1 = U.display_id JOIN users V ON C.user_id2 = V.display_id WHERE (C.user_id1 = ${userId} OR C.user_id2 = ${userId}) AND ()`,)
-
-    // const res = await db.execute(
-    //   sql`SELECT C.display_id as id, C.user_id1, C.user_id2, C.pinned_message_id, C.latest_message_id,
-    //   U.username as username1, V.username as username2, M.content as latest_message_content,
-    //   N.content as pinned_message_content, M.timestamp as latest_message_timestamp, M.sender_id as latest_message_sender_id, N.sender_id as pinned_message_sender_id, M.is_visibled as latest_message_isvisible FROM chats as C JOIN users U ON C.user_id1 = U.display_id JOIN users V ON C.user_id2 = V.display_id LEFT JOIN messages M ON C.latest_message_id = M.display_id LEFT JOIN messages N ON C.pinned_message_id = N.display_id WHERE C.user_id1 = ${userId} OR C.user_id2 = ${userId} ORDER BY latest_message_timestamp DESC`,
-    // );
     const plans = await db.query.usersToPlansTable.findMany({
       where: eq(usersToPlansTable.userId, userId),
       with: {
@@ -112,21 +97,7 @@ export async function POST(req: NextRequest) {
       });
       return newPlan;
     });
-    // return newPlanId;
 
-    // pusher socket
-    // const pusher = new Pusher({
-    //   appId: privateEnv.PUSHER_ID,
-    //   key: publicEnv.NEXT_PUBLIC_PUSHER_KEY,
-    //   secret: privateEnv.PUSHER_SECRET,
-    //   cluster: publicEnv.NEXT_PUBLIC_PUSHER_CLUSTER,
-    //   useTLS: true,
-    // });
-
-    // 改成監聽plans(?)
-    // await pusher.trigger(`private-${targetUserId}`, "chatrooms:update", {
-    //   senderId: userId,
-    // });
 
     // return
     return NextResponse.json(

@@ -51,7 +51,7 @@ export async function GET(
       })
       .from(journeysTable)
       .where(and(eq(journeysTable.plansId, planId)))
-      // .orderBy(journeysTable.timestamp) //之後要加
+      .orderBy(journeysTable.start)
       .execute();
 
     return NextResponse.json(

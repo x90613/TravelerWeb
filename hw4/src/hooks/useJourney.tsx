@@ -13,6 +13,7 @@ import { useParams, useRouter, usePathname } from "next/navigation";
 import { pusherClient } from "@/lib/pusher/client";
 
 import usePlans from "./usePlans";
+import { channel } from "diagnostics_channel";
 
 type PusherPayload = {
   senderId: string;
@@ -71,6 +72,41 @@ export function JourneyProvider({ children }: { children: React.ReactNode }) {
     if (!planId) return;
     fetchJourneys();
   }, [planId, fetchJourneys]);
+
+
+  // pusher
+  useEffect(() => {
+    const listen = async () => {
+      if(!userId) return; 
+      
+      const channelName = `private-${userId}`
+
+      try {
+        const channel = pusherClient.subscribe(channelName);
+        channel.bind("plans:update", async({ senderId }: PusherPayload) => {
+          if(senderId === userId){// don't update events that are trigged by myself
+            return;
+          }
+          await fetchPlans();
+        });
+        // channel.bind("journey:update", async({ senderId }: PusherPayload) => {
+        //   if(senderId === userId){
+        //     return;
+        //   }
+        //   await fetchPlans();
+        //   await fetchJourneys();
+        // });
+      } catch (error) {
+        console.log(error);
+      }
+
+      return() => {
+        pusherClient.unsubscribe(channelName);
+      };
+    };
+    listen();
+  },[userId, fetchPlans, fetchJourneys])
+
 
   const addJourney = async (
     title: string,
