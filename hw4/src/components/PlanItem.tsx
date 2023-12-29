@@ -79,10 +79,10 @@ export default function PlanItem({ planId, name, description }: PlanItemProps) {
       >
         <div className="flex items-center">
           <Link
-            className={`m-1 w-10/12 rounded-full ${
-              currentPlanId === planId ? "bg-sky-200" : "bg-gray-200"
+            className={`link-item m-1 w-10/12 rounded-full ${
+              currentPlanId === planId ? "bg-yellow-200" : "bg-yellow-50"
             } p-4 px-4 transition-colors ${
-              currentPlanId === planId ? "" : "hover:bg-sky-100"
+              currentPlanId === planId ? "" : "hover:bg-yellow-100"
             }`}
             href={{
               pathname: `/plan/${planId}`,

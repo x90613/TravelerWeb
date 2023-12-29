@@ -4,6 +4,7 @@
 import { LuLogOut, LuPlus, LuUser } from "react-icons/lu";
 
 import { useSession } from "next-auth/react";
+import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
@@ -33,6 +34,7 @@ export default function PlansBar() {
       },
     },
   };
+
   // let partialChatrooms = useRef([]);
 
   // useEffect(() => {
@@ -78,9 +80,17 @@ export default function PlansBar() {
   return (
     <>
       <div className=" flex flex-col">
-        <div className="m-1 flex flex-row items-center">
-          <span className="w-full p-3 px-4 text-3xl font-bold">Traveler</span>
+        <div className="m-1 flex flex-row items-center justify-between">
+          <motion.img
+            src="/travel3.png"
+            alt="#"
+            className="icon-bar"
+            width={100}
+            height={50}
+          />
 
+          {/* a big bold font "Traveler" */}
+          <span className="Travel-icon text-3xl font-bold">Traveler</span>
           <motion.div
             className="text-medium m-1 font-semibold"
             variants={signOutVariants}
@@ -89,7 +99,10 @@ export default function PlansBar() {
             <AddPlanButton />
           </motion.div>
         </div>
-        <p className="w-full p-3 px-4">The joy of journeying.</p>
+
+        <p className="font-seri w-full p-3 px-4 font-bold">
+          The joy of journeying.
+        </p>
 
         {plans.map((p: any) => (
           <PlanItem
