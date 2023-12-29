@@ -80,6 +80,7 @@
 }
 
 .plan-bar {
+
   background-color: #f0e7c4f3;
 }
 
@@ -114,4 +115,6 @@
   75% {
     transform: translate(0px, 5px);  /* 向左下移动 */
   }
+
+
 }

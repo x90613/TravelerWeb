@@ -83,6 +83,7 @@ export default function PlanItem({ planId, name, description }: PlanItemProps) {
               currentPlanId === planId ? "bg-yellow-200" : "bg-yellow-50"
             } p-4 px-4 transition-colors ${
               currentPlanId === planId ? "" : "hover:bg-yellow-100"
+
             }`}
             href={{
               pathname: `/plan/${planId}`,

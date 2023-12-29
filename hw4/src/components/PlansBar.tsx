@@ -4,7 +4,9 @@
 import { LuLogOut, LuPlus, LuUser } from "react-icons/lu";
 
 import { useSession } from "next-auth/react";
+
 import Image from "next/image";
+
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
@@ -91,6 +93,7 @@ export default function PlansBar() {
 
           {/* a big bold font "Traveler" */}
           <span className="Travel-icon text-3xl font-bold">Traveler</span>
+
           <motion.div
             className="text-medium m-1 font-semibold"
             variants={signOutVariants}
@@ -103,6 +106,7 @@ export default function PlansBar() {
         <p className="font-seri w-full p-3 px-4 font-bold">
           The joy of journeying.
         </p>
+
 
         {plans.map((p: any) => (
           <PlanItem
