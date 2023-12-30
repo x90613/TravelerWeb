@@ -27,7 +27,7 @@ export async function DELETE(
     if (!session || !session?.user?.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-    // const userId = session.user.id;
+    const userId = session.user.id;
 
 
     const userIds = await db.query.usersToPlansTable.findMany({
@@ -70,16 +70,15 @@ export async function DELETE(
       useTLS: true,
     });
 
-    async function triggerUpdateForUsers(userIds: any) {
-      for (const item of userIds) {
+
+    for (const item of userIds) {
         await pusher.trigger(`private-${item.userId}`, "plans:update", {
-          senderId: item.userId,
+          senderId: userId,
         });
-        console.log(`successful del Update! ${item.userId}`)
-      }
+      console.log(`successful del Update! ${item.userId}`)
     }
-    console.log(userIds)
-    triggerUpdateForUsers(userIds)
+    // console.log(userIds)
+
 
     // return
     return NextResponse.json(

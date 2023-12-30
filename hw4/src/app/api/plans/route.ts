@@ -1,8 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
-
-import { and, eq, or, sql } from "drizzle-orm";
 import Pusher from "pusher";
-
+import { and, eq } from "drizzle-orm";
 import { db } from "@/db";
 import {
   usersToPlansTable,
@@ -12,9 +10,8 @@ import { auth } from "@/lib/auth";
 import { privateEnv } from "@/lib/env/private";
 import { publicEnv } from "@/lib/env/public";
 
-// GET /api/plans
 // To get All plans
-export async function GET(req: NextRequest) {
+export async function GET() {
   try {
     const session = await auth();
     if (!session || !session?.user?.id) {
@@ -48,7 +45,6 @@ export async function GET(req: NextRequest) {
   }
 }
 
-// POST /api/plans
 // To add a new plan
 export async function POST(req: NextRequest) {
   try {
@@ -112,7 +108,6 @@ export async function POST(req: NextRequest) {
   }
 }
 
-// PUT /api/plans
 // To update the plan
 export async function PUT(req: NextRequest) {
   try {
@@ -124,7 +119,7 @@ export async function PUT(req: NextRequest) {
 
     const { planId, name, description } = await req.json();
 
-    let ret_plan = await db
+    const ret_plan = await db
       .update(plansTable)
       .set({
         name: name,
@@ -132,19 +127,34 @@ export async function PUT(req: NextRequest) {
       })
       .where(and(eq(plansTable.displayId, planId)))
       .execute();
-    // console.log(ret_journey)
-    // pusher
-    // const pusher = new Pusher({
-    //   appId: privateEnv.PUSHER_ID,
-    //   key: publicEnv.NEXT_PUBLIC_PUSHER_KEY,
-    //   secret: privateEnv.PUSHER_SECRET,
-    //   cluster: publicEnv.NEXT_PUBLIC_PUSHER_CLUSTER,
-    //   useTLS: true,
-    // });
 
-    // await pusher.trigger(`private-${otherUserId}`, "chatrooms:update", {
-    //   senderId: userId,
-    // });
+    const userIds = await db.query.usersToPlansTable.findMany({
+      where: eq(usersToPlansTable.planId, planId),
+      with: {
+        user: {
+          columns: {
+            displayId: true,
+          },
+        },
+      },
+    });
+
+    // pusher socket
+    const pusher = new Pusher({
+      appId: privateEnv.PUSHER_ID,
+      key: publicEnv.NEXT_PUBLIC_PUSHER_KEY,
+      secret: privateEnv.PUSHER_SECRET,
+      cluster: publicEnv.NEXT_PUBLIC_PUSHER_CLUSTER,
+      useTLS: true,
+    });
+
+
+    for (const item of userIds) {
+        await pusher.trigger(`private-${item.userId}`, "plans:update", {
+          senderId: userId,
+        });
+      console.log(`successful del Update! ${item.userId}`)
+    }
 
     // return
     return NextResponse.json(

@@ -1,10 +1,10 @@
 import { NextResponse, type NextRequest } from "next/server";
 
-import { ConsoleLogWriter, and, eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import Pusher from "pusher";
 
 import { db } from "@/db";
-import { plansTable, journeysTable } from "@/db/schema";
+import { journeysTable } from "@/db/schema";
 import { auth } from "@/lib/auth";
 import { privateEnv } from "@/lib/env/private";
 import { publicEnv } from "@/lib/env/public";
@@ -35,17 +35,17 @@ export async function POST(req: NextRequest) {
       .execute();
 
     // pusher
-    // const pusher = new Pusher({
-    //   appId: privateEnv.PUSHER_ID,
-    //   key: publicEnv.NEXT_PUBLIC_PUSHER_KEY,
-    //   secret: privateEnv.PUSHER_SECRET,
-    //   cluster: publicEnv.NEXT_PUBLIC_PUSHER_CLUSTER,
-    //   useTLS: true,
-    // });
+    const pusher = new Pusher({
+      appId: privateEnv.PUSHER_ID,
+      key: publicEnv.NEXT_PUBLIC_PUSHER_KEY,
+      secret: privateEnv.PUSHER_SECRET,
+      cluster: publicEnv.NEXT_PUBLIC_PUSHER_CLUSTER,
+      useTLS: true,
+    });
 
-    // await pusher.trigger(`private-${otherUserId}`, "chat:update", {
-    //   senderId: userId,
-    // });
+    await pusher.trigger(`private-${planId}`, "journey:update", {
+      senderId: userId,
+    });
 
     return NextResponse.json(
       {
@@ -67,9 +67,9 @@ export async function PUT(req: NextRequest) {
     }
     const userId = session.user.id;
 
-    const { journeyId, title, start, end, location, note } = await req.json();
+    const { planId, journeyId, title, start, end, location, note } = await req.json();
 
-    let ret_journey = await db
+    const ret_journey = await db
       .update(journeysTable)
       .set({
         title: title,
@@ -80,21 +80,20 @@ export async function PUT(req: NextRequest) {
       })
       .where(and(eq(journeysTable.displayId, journeyId)))
       .execute();
-    // console.log(ret_journey)
+
     // pusher
-    // const pusher = new Pusher({
-    //   appId: privateEnv.PUSHER_ID,
-    //   key: publicEnv.NEXT_PUBLIC_PUSHER_KEY,
-    //   secret: privateEnv.PUSHER_SECRET,
-    //   cluster: publicEnv.NEXT_PUBLIC_PUSHER_CLUSTER,
-    //   useTLS: true,
-    // });
+    const pusher = new Pusher({
+      appId: privateEnv.PUSHER_ID,
+      key: publicEnv.NEXT_PUBLIC_PUSHER_KEY,
+      secret: privateEnv.PUSHER_SECRET,
+      cluster: publicEnv.NEXT_PUBLIC_PUSHER_CLUSTER,
+      useTLS: true,
+    });
 
-    // await pusher.trigger(`private-${otherUserId}`, "chatrooms:update", {
-    //   senderId: userId,
-    // });
+    await pusher.trigger(`private-${planId}`, "journey:update", {
+      senderId: userId,
+    });
 
-    // return
     return NextResponse.json(
       {
         journey: ret_journey,
