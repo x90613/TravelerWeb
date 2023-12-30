@@ -14,6 +14,7 @@ import { pusherClient } from "@/lib/pusher/client";
 
 import usePlans from "./usePlans";
 import { channel } from "diagnostics_channel";
+import { promises } from "dns";
 
 type PusherPayload = {
   senderId: string;
@@ -77,6 +78,7 @@ export function JourneyProvider({ children }: { children: React.ReactNode }) {
   // pusher for listening share events
   useEffect(() => {
     if(!userId) return; 
+    console.log()
     
     const channelName = `private-${userId}`
     try {
@@ -87,13 +89,6 @@ export function JourneyProvider({ children }: { children: React.ReactNode }) {
         }
         await fetchPlans();
       });
-      // channel.bind("journey:update", async({ senderId }: PusherPayload) => {
-      //   if(senderId === userId){
-      //     return;
-      //   }
-      //   await fetchPlans();
-      //   await fetchJourneys();
-      // });
     } catch (error) {
       console.log(error);
     }
@@ -112,12 +107,6 @@ export function JourneyProvider({ children }: { children: React.ReactNode }) {
 
     try {
       const channel = pusherClient.subscribe(channelName2);
-      // channel.bind("plans:update", async({ senderId }: PusherPayload) => {
-      //   if(senderId === userId){// don't update events that are trigged by myself
-      //     return;
-      //   }
-      //   await fetchPlans();
-      // });
       channel.bind("journey:update", async({ senderId }: PusherPayload) => {
         if(senderId === userId){
           return;
@@ -218,7 +207,6 @@ export function JourneyProvider({ children }: { children: React.ReactNode }) {
     return data;
   };
 
-  // exportJourney
   const exportJourney = async () => {
     const res = await fetch("/api/journeys/export", {
       method: "POST",
