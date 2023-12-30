@@ -51,24 +51,6 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const planName = body.planName;
     const description = body.description;
-    // const targetUsername = body.username; //要共邊的目標
-
-    // get target user id
-    // const [targetUser] = await db
-    //   .select({
-    //     id: usersTable.displayId,
-    //   })
-    //   .from(usersTable)
-    //   .where(eq(usersTable.username, targetUsername))
-    //   .execute();
-
-    // if (!targetUser) {
-    //   return NextResponse.json(
-    //     { error: "Target user does not exist" },
-    //     { status: 404 },
-    //   );
-    // }
-    // const targetUserId = targetUser.id; 原本是只跟一個人單向連結
 
     const session = await auth();
     if (!session || !session?.user?.id) {
@@ -150,10 +132,9 @@ export async function PUT(req: NextRequest) {
 
 
     for (const item of userIds) {
-        await pusher.trigger(`private-${item.userId}`, "plans:update", {
-          senderId: userId,
-        });
-      console.log(`successful del Update! ${item.userId}`)
+      await pusher.trigger(`private-${item.userId}`, "plans:update", {
+        senderId: userId,
+      });
     }
 
     // return

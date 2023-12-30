@@ -7,14 +7,10 @@ import {
 } from "react";
 
 import { useSession } from "next-auth/react";
-import { Palanquin } from "next/font/google";
-import { useParams, useRouter, usePathname } from "next/navigation";
-
+import { useParams, useRouter} from "next/navigation";
 import { pusherClient } from "@/lib/pusher/client";
-
 import usePlans from "./usePlans";
-import { channel } from "diagnostics_channel";
-import { promises } from "dns";
+
 
 type PusherPayload = {
   senderId: string;

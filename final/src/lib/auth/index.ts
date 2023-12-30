@@ -3,11 +3,8 @@ import GitHub from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
 
 import { eq } from "drizzle-orm";
-import { access } from "fs";
-
 import { db } from "@/db";
 import { usersTable } from "@/db/schema";
-
 import CredentialsProvider from "./CredentialsProvider";
 
 export const {

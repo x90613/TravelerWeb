@@ -2,9 +2,6 @@
 
 import { useRef, useState } from "react";
 import { LuPlus } from "react-icons/lu";
-
-import { useRouter } from "next/navigation";
-
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -22,7 +19,6 @@ import PlaceAutocomplete from "./PlaceAutocomplete";
 
 export default function AddJourneyButton() {
   const [modalOpen, setModalOpen] = useState(false);
-  const router = useRouter();
   const { addJourney } = useJourney();
 
   const titleRef = useRef<HTMLInputElement>(null);

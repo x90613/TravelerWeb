@@ -4,28 +4,17 @@
 import { BiLogOutCircle } from "react-icons/bi";
 import { FaUserAstronaut } from "react-icons/fa6";
 import { MdOutlineTravelExplore } from "react-icons/md";
-
 import { useSession } from "next-auth/react";
-import Image from "next/image";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
-import { useRouter } from "next/navigation";
-
 import { motion } from "framer-motion";
-
 import usePlans from "@/hooks/usePlans";
-
 import AddPlanButton from "./AddPlanButton";
 import PlanItem from "./PlanItem";
 
 export default function PlansBar() {
-  const { plans, addPlan } = usePlans();
+  const { plans} = usePlans();
   const { data: session } = useSession();
-  const userId = session?.user?.id;
 
-  const searchParams = useSearchParams();
-  // const search = searchParams.get("search");
-  const router = useRouter();
   const signOutVariants = {
     hover: {
       scale: 1.1,
@@ -36,48 +25,6 @@ export default function PlansBar() {
       },
     },
   };
-
-  // let partialChatrooms = useRef([]);
-
-  // useEffect(() => {
-  //   if (search !== null) {
-  //     partialChatrooms = chatrooms.filter((chatroom) => {
-  //       if (userId === chatroom.user_id1) {
-  //         return chatroom.username2.includes(search);
-  //       } else {
-  //         return chatroom.username1.includes(search);
-  //       }
-  //     });
-  //   }
-  // }, [search, chatrooms, userId]);
-
-  // const handleAddChatroom = async () => {
-  //   try {
-  //     if (!search) {
-  //       return;
-  //     }
-  //     const ret = await addChatroom(search);
-
-  //     if (!ret.chatroom && !ret.ok) {
-  //       const body = await ret.json();
-  //       alert(body.error);
-  //       return false;
-  //     }
-
-  //     const newChatroom = ret.chatroom;
-
-  //     const chatId = newChatroom.displayId;
-
-  //     // clearn seach param
-  //     const tmp = new URLSearchParams(searchParams);
-  //     tmp.delete("search");
-
-  //     router.push(`/chat/${chatId}`);
-  //   } catch (e) {
-  //     console.error(e);
-  //     alert(e);
-  //   }
-  // };
 
   return (
     <>

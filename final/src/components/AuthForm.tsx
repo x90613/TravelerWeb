@@ -1,7 +1,5 @@
 "use client";
 
-import { useState } from "react";
-
 import { signIn } from "next-auth/react";
 import Image from "next/image";
 
@@ -10,8 +8,6 @@ import { Button } from "@/components/ui/button";
 // Run: npx shadcn-ui@latest add card
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { publicEnv } from "@/lib/env/public";
-
-import AuthInput from "./AuthInput";
 
 function AuthForm() {
   return (

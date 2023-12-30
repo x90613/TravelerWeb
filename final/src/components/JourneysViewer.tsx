@@ -1,9 +1,5 @@
-import { MutableRefObject, useEffect, useRef, useState } from "react";
-import { LuPin, LuTrash2 } from "react-icons/lu";
-
+import { useEffect, useRef, useState } from "react";
 import { useSession } from "next-auth/react";
-
-import { Loader } from "@googlemaps/js-api-loader";
 import { motion } from "framer-motion";
 
 import {
@@ -53,10 +49,8 @@ export default function JourneyViewer({ journeys }: Props) {
 
 function JourneyItem({
   journey,
-  userId,
 }: {
   journey: any;
-  userId: string | undefined;
 }) {
   const [modalOpen, setModalOpen] = useState(false);
   const { deleteJourney, updateJourney } = useJourney();

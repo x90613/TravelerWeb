@@ -1,7 +1,6 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { LuPlus } from "react-icons/lu";
 import { RiUserShared2Line } from "react-icons/ri";
 
 import { useRouter } from "next/navigation";

@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect } from "react";
 import { BsCalendar2Plus } from "react-icons/bs";
 
 import { useSession } from "next-auth/react";
@@ -12,7 +11,6 @@ import EditPlanButton from "@/components/EditPlanButton";
 import JourneysViewer from "@/components/JourneysViewer";
 import ShareButton from "@/components/ShareButton";
 import { useJourney } from "@/hooks/useJourney";
-import usePlans from "@/hooks/usePlans";
 
 export default function ContentBar() {
   const { data: session } = useSession();
@@ -86,7 +84,7 @@ function ContentBarHeader({
   currentPlan: any;
   userId: string | undefined;
 }) {
-  let currentPlanName = currentPlan?.plan.name; // 沒有時，留白
+  const currentPlanName = currentPlan?.plan.name; // 沒有時，留白
   const signOutVariants = {
     hover: {
       scale: 1.1,

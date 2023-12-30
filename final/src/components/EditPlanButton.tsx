@@ -2,10 +2,6 @@
 
 import { useRef, useState } from "react";
 import { FcMenu } from "react-icons/fc";
-import { LuPlus } from "react-icons/lu";
-
-import { useRouter } from "next/navigation";
-
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -22,7 +18,6 @@ import usePlans from "@/hooks/usePlans";
 
 export default function EditPlanButton() {
   const [modalOpen, setModalOpen] = useState(false);
-  const router = useRouter();
   const { updatePlan } = usePlans();
   const { currentPlan } = useJourney();
 
@@ -58,8 +53,6 @@ export default function EditPlanButton() {
         return false;
       }
 
-      const newPlan = ret.plan;
-      const planId = newPlan.displayId;
 
       setModalOpen(false);
     } catch (e) {

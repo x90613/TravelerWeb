@@ -40,8 +40,6 @@ export async function DELETE(
         },
       },
     });
-    console.log("userId",userIds)
-
     await db
       .delete(plansTable)
       .where(eq(plansTable.displayId, params.planId))
@@ -75,9 +73,7 @@ export async function DELETE(
         await pusher.trigger(`private-${item.userId}`, "plans:update", {
           senderId: userId,
         });
-      console.log(`successful del Update! ${item.userId}`)
     }
-    // console.log(userIds)
 
 
     // return
