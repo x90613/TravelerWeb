@@ -14,7 +14,7 @@ const PlaceAutocomplete = forwardRef<HTMLInputElement, PlaceAutocompleteProps>(
 
     useEffect(() => {
       const loader = new Loader({
-        apiKey: "AIzaSyDnsTz5TEInTzvpMjqT4SED449TiX3hhOM", // 你的 API key
+        apiKey: "Your API key", // 你的 API key
         libraries: ["places"],
       });
 
@@ -47,4 +47,5 @@ const PlaceAutocomplete = forwardRef<HTMLInputElement, PlaceAutocompleteProps>(
   },
 );
 
+PlaceAutocomplete.displayName = "PlaceAutocomplete";
 export default PlaceAutocomplete;

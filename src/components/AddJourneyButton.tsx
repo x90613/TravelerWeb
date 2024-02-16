@@ -27,13 +27,13 @@ export default function AddJourneyButton() {
   const locationRef = useRef<HTMLInputElement>(null);
   const noteRef = useRef<HTMLInputElement>(null);
 
-  const handlePlaceSelect = (place) => {
-    // 更新 locationRef 的值
-    if (locationRef.current) {
-      locationRef.current.value = place.formatted_address;
-    }
-    // 这里可以添加更多的处理逻辑，如果需要的话
-  };
+  // const handlePlaceSelect = (place) => {
+  //   // 更新 locationRef 的值
+  //   if (locationRef.current) {
+  //     locationRef.current.value = place.formatted_address;
+  //   }
+  //   // 这里可以添加更多的处理逻辑，如果需要的话
+  // };
 
   const handleSave = async () => {
     const title = titleRef.current?.value;
@@ -141,12 +141,12 @@ export default function AddJourneyButton() {
             <Label htmlFor="username" className="text-right">
               location
             </Label>
-            <PlaceAutocomplete
+            {/* <PlaceAutocomplete
               ref={locationRef}
               onPlaceSelected={handlePlaceSelect}
-            />
+            /> */}
 
-            {/* <Input ref={locationRef} placeholder="" className="w-fit" /> */}
+            <Input ref={locationRef} placeholder="" className="w-fit" />
           </div>
         </div>
         <div className="grid gap-4 py-2">

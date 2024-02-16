@@ -14,7 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useJourney } from "@/hooks/useJourney";
 
-import PlaceAutocomplete from "./PlaceAutocomplete";
+// import PlaceAutocomplete from "./PlaceAutocomplete";
 import { Button } from "./ui/button";
 
 type Props = {
@@ -37,7 +37,6 @@ export default function JourneyViewer({ journeys }: Props) {
         {journeys.map((journey: { journeyId: any }) => (
           <JourneyItem
             journey={journey}
-            userId={userId}
             key={journey.journeyId}
           />
         ))}
@@ -60,13 +59,13 @@ function JourneyItem({
   const endRef = useRef<HTMLInputElement>(null);
   const locationRef = useRef<HTMLInputElement>(null);
   const noteRef = useRef<HTMLInputElement>(null);
-  const handlePlaceSelect = (place) => {
-    // 更新 locationRef 的值
-    if (locationRef.current) {
-      locationRef.current.value = place.formatted_address;
-    }
-    // 这里可以添加更多的处理逻辑，如果需要的话
-  };
+  // const handlePlaceSelect = (place) => {
+  //   // 更新 locationRef 的值
+  //   if (locationRef.current) {
+  //     locationRef.current.value = place.formatted_address;
+  //   }
+  //   // 这里可以添加更多的处理逻辑，如果需要的话
+  // };
   const handleDelete = async () => {
     try {
       const ret = await deleteJourney(journey.journeyId);
@@ -173,17 +172,17 @@ function JourneyItem({
                 location
               </Label>
 
-              <PlaceAutocomplete
+              {/* <PlaceAutocomplete
                 ref={locationRef}
                 onPlaceSelected={handlePlaceSelect}
                 location={journey.location}
-              />
-              {/* <Input
+              /> */}
+              <Input
                 ref={locationRef}
                 defaultValue={journey.location}
                 placeholder=""
                 className="w-fit"
-              /> */}
+              />
             </div>
           </div>
           <div className="grid gap-4 py-2">

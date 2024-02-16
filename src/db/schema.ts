@@ -108,7 +108,11 @@ export const journeysTable = pgTable(
     end: varchar("end").notNull(),
     location: varchar("location").notNull(),
     note: varchar("note", { length: 100 }).notNull(),
-    plansId: uuid("plans_id"), // 外來鍵(如果plan刪掉，journey也要一併刪除)
+    plansId: uuid("plans_id")
+      .references(() => plansTable.displayId, {
+        onDelete: "cascade", // Add cascade on delete
+        onUpdate: "cascade",
+      })
   },
   (table) => ({
     displayIdIndex: index("display_id_index").on(table.displayId),
